@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<HTML xmlns:xs="https://www.w3.org/2001/XMLSchema">
+    <head>
+        <meta charset="UTF-8" />
+        <title>
+
+        </title>
+      
+        <style>
+          body {
+            background-color: rgb(241, 255, 241);
+          }
+
+          .hotelimage {
+            width: 32px;
+            height: 32px;
+            margin-left: -40px;
+            top: -40px;
+            margin-bottom: -40px;
+            position: relative;
+            display: block;
+          }
+
+          .guestimage {
+            width: 32px;
+            height: 32px;
+            margin-right: -40px;
+            position: relative;
+            top: -40px;
+            margin-bottom: -40px;
+            display: block;
+          }
+
+
+          /* Definition des allgemeinen fensters */
+          .chatbot {
+            background-color: #cefdd3;
+            border: 1px solid #e5e5ea;
+            border-radius: 0.25rem;
+            display: flex;
+            flex-direction: column;
+            font-family: "SanFrancisco";
+            font-size: 1.25rem;
+            margin: 0 auto 1rem;
+            padding: 0.5rem 4.0rem;
+            /* von der linken Seite stärker einrücken, damit wir Platz für das Image haben */
+            padding-left: 4.0rem;
+          }
+
+          .chatbot p {
+            border-radius: 1.15rem;
+            line-height: 1.25;
+            max-width: 75%;
+            padding: 0.5rem .875rem;
+            position: relative;
+            word-wrap: break-word;
+          }
+
+          .chatbot p::before,
+          .chatbot p::after {
+            bottom: -0.1rem;
+            content: "";
+            height: 1rem;
+            position: absolute;
+          }
+
+          p.from-guest {
+            align-self: flex-end;
+            background-color: #017c2e;
+            color: #ffffff;
+          }
+
+          p.from-guest::before {
+            border-bottom-left-radius: 0.8rem 0.7rem;
+            border-right: 1rem solid #017c2e;
+            right: -0.35rem;
+            transform: translate(0, -0.1rem);
+          }
+
+          p.from-guest::after {
+            background-color: #cefdd3;
+            border-bottom-left-radius: 0.5rem;
+            right: -40px;
+            transform:translate(-30px, -2px);
+            width: 10px;
+          }
+
+          p[class^="from-"] {
+            margin: 0.5rem 0;
+            width: fit-content;
+          }
+
+          p.from-guest ~ p.from-guest {
+            margin: 0.25rem 0 0;
+          }
+
+          p.from-guest ~ p.from-guest:not(:last-child) {
+            margin: 0.25rem 0 0;
+          }
+
+          p.from-guest ~ p.from-guest:last-child {
+            margin-bottom: 0.5rem;
+          }
+
+          p.from-hotel {
+            align-items: flex-start;
+            background-color: #f0f0f6;
+            color: #000;
+          }
+
+          /* das kleine Dreieck nach */
+          p.from-hotel:before {
+            border-bottom-right-radius: 0.8rem 0.7rem;
+            border-left: 1rem solid #f0f0f6;
+            left: -0.35rem;
+            transform: translate(0, -0.1rem);
+          }
+
+          p.from-hotel::after {
+            background-color: #cefdd3;
+            border-bottom-right-radius: 0.5rem;
+            left: 20px;
+            transform: translate(-30px, -2px);
+            width: 10px;
+          }
+
+          p[class^="from-"].emoji {
+            background: none;
+            font-size: 2.5rem;
+          }
+
+          p[class^="from-"].emoji::before {
+            content: none;
+          }
+
+          .no-tail::before {
+            display: none;
+          }
+
+          .margin-b_none {
+            margin-bottom: 0 !important;
+          }
+
+          .margin-b_one {
+            margin-bottom: 0 !important;
+          }
+
+          .margin-t_one {
+            margin-top: 1rem !important;
+          }
+
+
+          /* general styling */
+          @font-face {
+            font-family: "SanFrancisco";
+            src:
+              url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff2") format("woff2"),
+              url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff") format("woff");
+          }
+
+          body {
+            font-family: -apple-system,
+              BlinkMacSystemFont,
+              "Segoe UI",
+              Roboto,
+              Oxygen-Sans,
+              Ubuntu,
+              Cantarell,
+              "Helvetica Neue",
+              sans-serif;
+            font-weight: normal;
+            margin: 0;
+          }
+
+          .container {
+            margin: 0 auto;
+            padding: 1rem;
+          }
+
+          h1 {
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+          }
+
+          h2 {
+            border-bottom: 1px solid #e5e5ea;
+            color: #666;
+            font-weight: normal;
+            margin-top: 0;
+            padding-bottom: 1.5rem;
+          }
+
+          .comment {
+            color: #222;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            max-width: 100%;
+            padding: 0;
+          }
+
+          @media screen and (max-width: 300px) {
+            body {
+              margin: 0 0.5rem;
+            }
+
+            .container {
+              padding: 0.5rem;
+            }
+
+            .chatbot {
+              font-size: 1.05rem;
+              margin: 0 auto 1rem;
+              max-width: 600px;
+              padding: 0.25rem 0.875rem;
+            }
+
+            .chatbot p {
+              margin: 0.5rem 0;
+            }
+          }
+          
+          #base64-hotel-img {
+            content: url("data:image/png;base64,@HOTELBASE64DATA@");
+          }
+          #base64-guest-img {
+            content: url("data:image/png;base64,@GUESTBASE64DATA@");
+          }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="chatbot">
+

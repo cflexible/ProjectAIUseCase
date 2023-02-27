@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  HotelChatBot
+
+  Created by Jens Lünstedt on 23.02.23.
+  
+*/
+
+"Help text" = "This is our reservation chatbot. It will ask you some questions which you are pleased to answer. Please help the bot to make clear answers to shorten the reservation process.
+Thank ypu very much.
+We are pleased to greet you at our hotel \"To the Prancing Pony\".";
+
+"Information about this chatbot" = "Information about this chatbot";
+"To the Prancing Pony booking chatbot" = "To the Prancing Pony booking chatbot";

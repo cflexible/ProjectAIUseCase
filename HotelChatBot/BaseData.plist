@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>workflows</key>
+	<array>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>orderNumber</key>
+				<integer>0</integer>
+				<key>englishText</key>
+				<string>Hello&lt;br&gt;Welcome to our beautiful hotel &lt;br&gt;&lt;strong&gt;&quot;To the Prancing Pony&quot;&lt;/strong&gt;&lt;br&gt;I am your booking assistent and I guide you through the booking process.&lt;br&gt;Please give me you first and lastname or your eMail address when you have already been a guest at our hotel.</string>
+				<key>isQuestion</key>
+				<true/>
+			</dict>
+		</dict>
+	</array>
+	<key>parkingplaces</key>
+	<array>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>id</key>
+				<string>P1</string>
+				<key>hasCharger</key>
+				<false/>
+				<key>price</key>
+				<integer>5</integer>
+			</dict>
+		</dict>
+	</array>
+	<key>rooms</key>
+	<array>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>roomNumber</key>
+				<integer>101</integer>
+				<key>name</key>
+				<string>Room 101</string>
+				<key>numberOfBeds</key>
+				<integer>2</integer>
+				<key>price</key>
+				<real>39.9</real>
+				<key>roomDescription</key>
+				<string>A beautiful room on the first floor with view to the stables</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>roomNumber</key>
+				<integer>102</integer>
+				<key>name</key>
+				<string>Room 102</string>
+				<key>numberOfBeds</key>
+				<integer>2</integer>
+				<key>price</key>
+				<real>39.9</real>
+				<key>roomDescription</key>
+				<string>A beautiful room on the first floor with view to the courtyard</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>roomNumber</key>
+				<integer>201</integer>
+				<key>name</key>
+				<string>Room 201</string>
+				<key>numberOfBeds</key>
+				<integer>2</integer>
+				<key>price</key>
+				<real>599</real>
+				<key>roomDescription</key>
+				<string>A beautiful room on the second floor with view over the countryside</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

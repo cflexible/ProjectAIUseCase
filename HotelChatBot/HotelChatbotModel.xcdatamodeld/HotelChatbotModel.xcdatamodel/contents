@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Booking" representedClassName="Booking" syncable="YES" codeGenerationType="class">
+        <attribute name="breakfast" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="comment" optional="YES" attributeType="String"/>
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="guestType" optional="YES" attributeType="String" defaultValueString="business"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="numberOfChildren" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="numberOfGuests" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="paymentMethod" attributeType="String"/>
+        <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="state" attributeType="String"/>
+        <relationship name="guest" maxCount="1" deletionRule="No Action" destinationEntity="Guest"/>
+        <relationship name="parkings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Parkingplace"/>
+        <relationship name="rooms" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Room"/>
+    </entity>
+    <entity name="Classifierdefinitions" representedClassName="Classifierdefinitions" syncable="YES" codeGenerationType="class">
+        <attribute name="text" attributeType="String"/>
+        <attribute name="theClassifier" attributeType="String"/>
+    </entity>
+    <entity name="Guest" representedClassName="Guest" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="country" optional="YES" attributeType="String"/>
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="firstname" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="lastname" attributeType="String"/>
+        <attribute name="mailaddress" attributeType="String"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="phonenumber" attributeType="String"/>
+        <attribute name="zip" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Parkingplace" representedClassName="Parkingplace" syncable="YES" codeGenerationType="class">
+        <attribute name="blocked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hasCharger" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0"/>
+    </entity>
+    <entity name="Room" representedClassName="Room" syncable="YES" codeGenerationType="class">
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="numberOfBeds" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="roomDescription" optional="YES" attributeType="String"/>
+        <attribute name="roomNumber" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="state" attributeType="String" defaultValueString="free"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="RoomImage"/>
+    </entity>
+    <entity name="RoomImage" representedClassName="RoomImage" syncable="YES" codeGenerationType="class">
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="filename" attributeType="String"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="Translation" representedClassName="Translation" syncable="YES" codeGenerationType="class">
+        <attribute name="language" attributeType="String"/>
+        <attribute name="sourceString" attributeType="String"/>
+        <attribute name="translation" attributeType="String"/>
+    </entity>
+    <entity name="Workflow" representedClassName="Workflow" syncable="YES" codeGenerationType="class">
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="englishText" attributeType="String"/>
+        <attribute name="isQuestion" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="orderNumber" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="nextSteps" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkflowRules"/>
+    </entity>
+    <entity name="WorkflowRules" representedClassName="WorkflowRules" syncable="YES" codeGenerationType="class">
+        <attribute name="answerReferenceToUser" attributeType="String"/>
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nextStep" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rule" attributeType="String"/>
+    </entity>
+</model>
