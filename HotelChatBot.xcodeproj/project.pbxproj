@@ -87,7 +87,6 @@
 		0A7939B029A4B2F200F7D000 = {
 			isa = PBXGroup;
 			children = (
-				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0A7939BB29A4B2F300F7D000 /* HotelChatBot */,
 				0A7939BA29A4B2F300F7D000 /* Products */,
 			);
@@ -104,6 +103,7 @@
 		0A7939BB29A4B2F300F7D000 /* HotelChatBot */ = {
 			isa = PBXGroup;
 			children = (
+				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0A7939BC29A4B2F300F7D000 /* AppDelegate.swift */,
 				0A7939BE29A4B2F300F7D000 /* ViewController.swift */,
 				0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */,
@@ -148,6 +148,7 @@
 				0A7939B529A4B2F300F7D000 /* Sources */,
 				0A7939B629A4B2F300F7D000 /* Frameworks */,
 				0A7939B729A4B2F300F7D000 /* Resources */,
+				0A0F56B929AD017800696CAF /* Set build number */,
 			);
 			buildRules = (
 			);
@@ -208,6 +209,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0A0F56B929AD017800696CAF /* Set build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Set build number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"$SRCROOT/Scripts/set_build_number.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0A7939B529A4B2F300F7D000 /* Sources */ = {
