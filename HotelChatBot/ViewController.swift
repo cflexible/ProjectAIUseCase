@@ -32,7 +32,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
 
         self.view.window?.delegate = self
         editField.delegate = self
-        var html: String = outviewGenerator.newHotelChat(text: ChatController.nextStep())
+        let html: String = outviewGenerator.newHotelChat(text: ChatController.nextStep())
         webView.navigationDelegate = self
         webView.loadHTMLString(html, baseURL: nil)
     }
@@ -48,6 +48,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
 
         super.viewWillAppear()
         self.view.window?.title = NSLocalizedString("To the Prancing Pony booking chatbot", comment: "")
+        ChatController.currentLanguage = Utilities.getLanguage().lowercased()
     }
     
     
@@ -93,7 +94,18 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-       if editField.stringValue.count == 0 { return }
+        if editField.stringValue.count == 0 { return }
+        
+        // We test the text language and compare it with the actual user language
+        let textLanguage = ChatController.currentTextLanguage(text: editField.stringValue)
+        if textLanguage.count > 0 && textLanguage != ChatController.currentLanguage {
+            let languageWindowController = Utilities.storyBoard.instantiateController(withIdentifier: "LanguageQuestionWindow") as! NSWindowController
+            let languageController: LanguageWindowController = languageWindowController.contentViewController as! LanguageWindowController
+            languageController.setLanguages(oldLanguage: ChatController.currentLanguage, newLanguage: textLanguage)
+            let application = NSApplication.shared
+            application.runModal(for: languageWindowController.window!)
+            languageWindowController.close()
+        }
         
         let html: String = outviewGenerator.newGuestChat(text: editField.stringValue)
         webView.loadHTMLString(html, baseURL: nil)
@@ -106,7 +118,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             webView.navigationDelegate = self
             webView.loadHTMLString(html, baseURL: nil)
         }
-        if ((newHotelChatString ?? "").contains("Good bye")) {
+        if ((newHotelChatString ?? "").contains(NSLocalizedString("Good bye", comment: ""))) {
             editField.isEditable = false
             let html: String = outviewGenerator.newHotelChat(text: NSLocalizedString("You can close the window now.", comment: ""))
             webView.loadHTMLString(html, baseURL: nil)

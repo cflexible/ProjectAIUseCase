@@ -13,6 +13,9 @@ class ChatController: NSObject {
     static var classifierModel: NLModel?
     static var taggerModel: NLModel?
 
+    static var classifierVersion = "4"
+    static var taggerVersion     = "4"
+
     static var actStep: Int = -1
     static var newLearnTaggingWordString:  String = ""
     static var newLearnTaggingString:      String = ""
@@ -22,9 +25,110 @@ class ChatController: NSObject {
     static var wantsBooking:  Bool?
     static var askedQuestion: Int = 0
     
+    // If the current language is changed we load the language model
+    static var currentLanguage: String = "" {
+        didSet {
+            if currentLanguage != oldValue {
+                initModels()
+                Translations.translationLanguage = currentLanguage
+            }
+        }
+    }
+    
     // We read all the workflows once from the database and sort them by questionNumber
     static var workflows: [Workflow] = DatastoreController.shared.allForEntity("Workflow", with: nil, orderBy: [NSSortDescriptor(key: "questionNumber", ascending: true)]) as! [Workflow]
+
+    //MARK: Initialisation functions
+
+    /**
+        We load language specific models if possible. Otherwise we look for an english version or a version without a language
+     */
+    static private func initModels() {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        if classifierModel != nil && taggerModel != nil {
+            return
+        }
+        if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier_" + currentLanguage + " " + classifierVersion, withExtension: "mlmodelc") {
+            do {
+                classifierModel = try NLModel(contentsOf: classifierModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+        else if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier_en " + classifierVersion, withExtension: "mlmodelc") {
+            do {
+                classifierModel = try NLModel(contentsOf: classifierModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+        else if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier " + classifierVersion, withExtension: "mlmodelc") {
+            do {
+                classifierModel = try NLModel(contentsOf: classifierModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+
+        
+        if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger_" + currentLanguage + " " + taggerVersion, withExtension: "mlmodelc") {
+            do {
+                taggerModel = try NLModel(contentsOf: taggerModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+        else if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger_en " + taggerVersion, withExtension: "mlmodelc") {
+            do {
+                taggerModel = try NLModel(contentsOf: taggerModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+        else if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger " + taggerVersion, withExtension: "mlmodelc") {
+            do {
+                taggerModel = try NLModel(contentsOf: taggerModelURL)
+            }
+            catch  {
+                print("error trying to load classifier model")
+                return
+            }
+        }
+    }
+
+
+    /**
+        we look for the current text language
+     */
+    static func currentTextLanguage(text: String) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        // Initialize LanguageRecognizer
+        let languageRecog = NLLanguageRecognizer()
+        // find the dominant language
+        languageRecog.processString(text)
+        print("Dominant language is: \(languageRecog.dominantLanguage?.rawValue ?? "")")
+        return languageRecog.dominantLanguage?.rawValue ?? ""
+    }
     
+    
+    //MARK: Workflow functions
+
     static func nextStep() -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -42,34 +146,193 @@ class ChatController: NSObject {
         return ""
     }
     
-    static private func initModels() {
+    
+    /**
+        Main function for analysing a text. Here we just splitt the text into sentences and analyse them separately
+     */
+    static func analyseText(text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-        if classifierModel != nil && taggerModel != nil {
-            return
+        if currentLanguage.count == 0 {
+            currentLanguage = currentTextLanguage(text: text)
         }
-        if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier 4", withExtension: "mlmodelc") {
-            do {
-                classifierModel = try NLModel(contentsOf: classifierModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
-        }
-        if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger 4", withExtension: "mlmodelc") {
-            do {
-                taggerModel = try NLModel(contentsOf: taggerModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
-        }
-    }
 
+        initModels()
+        
+        struct ValueHypotheseses {
+            var text: String
+            var hypotheses: Double
+        }
+        
+        let sentences = text.split(separator: ".")
+        var fullResult = ""
+        for sentence in sentences {
+            var result: String = analyseSentence(text: String(sentence))
+            if !fullResult.contains(result) {
+                fullResult = fullResult + result
+            }
+        }
+        fullResult = fullResult + getNextQuestion()
+        return fullResult
+        
+    }
+    
+    
+    static private func analyseSentence(text: String) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        if currentLanguage.count == 0 {
+            currentLanguage = currentTextLanguage(text: text)
+        }
+
+        initModels()
+        
+        var guest: Guest? = workBooking?.guest
+        
+        struct ValueHypotheseses {
+            var text: String
+            var hypotheses: Double
+        }
+        
+        if classifierModel != nil && taggerModel != nil {
+            var classifierLabel = classifierModel!.predictedLabel(for: text)
+            // We remember the text
+            ClassifierHelper.addText(text: text, classifierString: classifierLabel)
+            print("Found classifier: \(classifierLabel ?? "")")
+            if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
+                classifierLabel = "hasDates"
+            }
+            switch classifierLabel {
+                
+            case "hasNames":
+                if workBooking?.guest?.firstname?.count ?? 0 > 0 && workBooking?.guest?.lastname?.count ?? 0 > 0 {
+                    return "We are sorry but I did not understand you.<br>"
+                }
+                let firstName: String = valueForNames(tagname: "first-name", text: text)
+                let lastName:  String = valueForNames(tagname: "last-name", text: text)
+                
+                if firstName.count > 0 && lastName.count > 0 {
+                    guest = DatastoreController.shared.createNewEntityByName("Guest") as? Guest
+                    guest?.firstname = firstName
+                    guest?.lastname  = lastName
+                    addValueToBooking(data: guest!)
+                    return "Hello <strong>" + firstName + "</strong> <strong>" + lastName + "</strong>. Welcome to our hotel. <br>"
+                }
+                return "We are sorry but I did not understand you.<br>"
+                
+            case "hasMailaddress":
+                let mail: String = Utilities.getMailAddressFromText(text) ?? ""
+                
+                if guest != nil && guest?.firstname?.count ?? 0 > 0 && guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
+                    guest?.mailaddress = mail
+                }
+                else if mail.count > 0 {
+                    let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
+                    if guestDB != nil {
+                        addValueToBooking(data: guestDB!)
+                    }
+                }
+                else {
+                    writeNewTraingsdataToFile()
+                    return String("I'm sorry but I could not understand you.<br>")
+                }
+                if workBooking?.guest != nil {
+                    let firstName: String = workBooking?.guest?.firstname ?? ""
+                    let lastName:  String = workBooking?.guest?.lastname  ?? ""
+                    return "Hallo " + "<strong>" + firstName + "</strong>" + " " + "<strong>" + lastName + "</strong>" + ". Welcome to our hotel. <br>"
+                }
+                else {
+                    return "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>"
+                }
+
+            case "numberOfGuests":
+                let numberOfGuests = valueForNumbers(tagname: "number", text: text)
+                if workBooking?.startDate != nil && workBooking?.endDate != nil && numberOfGuests > 0 {
+                    let bookedRoomCount: Int = workBooking?.bookRooms(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!, countPersons: numberOfGuests) ?? 0
+                    if bookedRoomCount > 0 {
+                        return "We have booked \(String(bookedRoomCount)) rooms for you.<br>"
+                    }
+                    else {
+                        return "We are sorry but we have not enough free rooms available.<br>"
+                    }
+                }
+                return "We are sorry but we could not understand how many you are. Please try it again.<br>"
+                
+            case "hasDates":
+                let dates: [Date]? = valueForDates(text: text, language: currentLanguage)
+                if workBooking != nil && dates?.count == 2 && dates?[0].compare((dates?[1])!) == .orderedAscending {
+                    workBooking?.startDate = dates![0]
+                    workBooking?.endDate   = dates![1]
+                    return "Thank you for the dates.<br>"
+                }
+                return "we are sorry but we could not recognize the dates. We prefere a format in yyyy-mm-dd.<br>"
+                
+            case "positive-hasChildren":
+                workBooking?.numberOfChildren = 1
+                return "We have noticed a child.<br>"
+            case "negative-hasChildren":
+                workBooking?.numberOfChildren = 0
+                return "We have noticed no children.<br>"
+                
+            case "privateVisit":
+                workBooking?.guestType = "Private"
+                return "We have noticed your visit as a private visit.<br>"
+            case "businessVisit":
+                workBooking?.guestType = "Business"
+                return "We have noticed your visit as a business visit.<br>"
+                
+            case "hasPhonenumber":
+                let phoneNumberString: String = valueForPhone(text: text)
+                workBooking?.guest?.phonenumber = phoneNumberString
+                return "Thank you for your phonenumber.<br>"
+                
+            case "positive-breakfast":
+                workBooking?.breakfast = true
+                return "Breakfast is noticed.<br>"
+            case "negative-breakfast":
+                workBooking?.breakfast = false
+                return "It is noticed that you do not want to have breakfast.<br>"
+                
+            case "positive-parking":
+                if workBooking?.startDate != nil && workBooking?.endDate != nil {
+                    if workBooking?.bookParking(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!) ?? false {
+                        return "Parking is noticed.<br>" + getNextQuestion()
+                    }
+                    else {
+                        return "We are sorry but we do not have a free parking place for you.<br>"
+                    }
+                }
+                return "Before we can book a parking place we need your arrival and departure dates.<br>"
+            case "negative-parking":
+                return "It is noticed that you do not need a parking place.<br>"
+            
+            case "number-answer":
+                return "Thank you<br>"
+                
+            case "room-price":
+                return Booking.roomPrices() + "<br>"
+            case "free-room":
+                if workBooking?.startDate != nil && workBooking?.endDate != nil && workBooking?.numberOfGuests != nil {
+                    return Booking.freeRooms(fromDate: workBooking!.startDate!, toDate: workBooking!.endDate!, countPersons: Int(workBooking!.numberOfGuests)) + "<br>" + getNextQuestion()
+                }
+                return "Please give us your visit dates and how many you are.<br>"
+            default:
+                break
+            }
+        }
+        else {
+            return String("I'm sorry but I miss a NLP model, please ask the developer.")
+        }
+        
+        writeNewTraingsdataToFile()
+        return String("I'm sorry but I could not understand you.<br>")
+    }
+    
+    
 
     static func valueForTag(tagname: String, text: String) -> String {
         #if DEBUG
@@ -341,22 +604,17 @@ class ChatController: NSObject {
         }
         addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
 
-        let languageRecog = NLLanguageRecognizer()
-        // find the dominant language
-        languageRecog.processString(text)
-        print("language for date is: \(languageRecog.dominantLanguage?.rawValue ?? "")")
-
-        if fromYearString.count == 0 {
+       if fromYearString.count == 0 {
             fromYearString = Utilities.actualYear()
         }
         if toYearString.count == 0 {
             toYearString = Utilities.actualYear()
         }
-        fromDayString   = fromDayString.wordToIntegerString(language: languageRecog.dominantLanguage?.rawValue ?? "")   ?? ""
-        toDayString     = toDayString.wordToIntegerString(language: languageRecog.dominantLanguage?.rawValue ?? "")     ?? ""
+        fromDayString   = fromDayString.wordToIntegerString(language: currentLanguage)   ?? ""
+        toDayString     = toDayString.wordToIntegerString(language: currentLanguage)     ?? ""
         
-        let fromDate: Date? = Utilities.dateFromComponentStrings(day: fromDayString, month: fromMonthString, year: fromYearString, language: languageRecog.dominantLanguage?.rawValue)
-        let toDate:   Date? = Utilities.dateFromComponentStrings(day: toDayString, month: toMonthString, year: toYearString, language: languageRecog.dominantLanguage?.rawValue)
+        let fromDate: Date? = Utilities.dateFromComponentStrings(day: fromDayString, month: fromMonthString, year: fromYearString, language: currentLanguage)
+        let toDate:   Date? = Utilities.dateFromComponentStrings(day: toDayString, month: toMonthString, year: toYearString, language: currentLanguage)
         
         if fromDate == nil || toDate == nil { return nil }
         return [fromDate!, toDate!]
@@ -443,7 +701,7 @@ class ChatController: NSObject {
                              options: [.omitWhitespace]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
-                if tag.rawValue == "phone" {
+                if tag.rawValue == tagname {
                     resultPhoneNumber += text[tokenRange]
                 }
                 if newLearnTaggingWordString.count > 0 {
@@ -460,167 +718,6 @@ class ChatController: NSObject {
     }
 
 
-
-    
-    
-    static func analyseText(text: String) -> String {
-        #if DEBUG
-            NSLog("\(type(of: self)) \(#function)()")
-        #endif
-
-        // Initialize LanguageRecognizer
-        let languageRecog = NLLanguageRecognizer()
-        // find the dominant language
-        languageRecog.processString(text)
-        print("Dominant language is: \(languageRecog.dominantLanguage?.rawValue ?? "")")
-
-        initModels()
-        
-        var guest: Guest? = ChatController.workBooking?.guest
-        
-        struct ValueHypotheseses {
-            var text: String
-            var hypotheses: Double
-        }
-        
-        var testValue = workBooking?.value(forKeyPath: "guest")
-        testValue     = workBooking?.value(forKeyPath: "startDate")
-        
-        if classifierModel != nil && taggerModel != nil {
-            var classifierLabel = classifierModel!.predictedLabel(for: text)
-            // We remember the text
-            ClassifierHelper.addText(text: text, classifierString: classifierLabel)
-            print("Found classifier: \(classifierLabel ?? "")")
-            if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
-                classifierLabel = "hasDates"
-            }
-            switch classifierLabel {
-                
-            case "hasNames":
-                if workBooking?.guest?.firstname?.count ?? 0 > 0 && workBooking?.guest?.lastname?.count ?? 0 > 0 {
-                    return "We are sorry but I did not understand you right.<br>" + getNextQuestion()
-                }
-                let firstName: String = valueForNames(tagname: "first-name", text: text)
-                let lastName:  String = valueForNames(tagname: "last-name", text: text)
-                
-                if firstName.count > 0 && lastName.count > 0 {
-                    guest = DatastoreController.shared.createNewEntityByName("Guest") as? Guest
-                    guest?.firstname = firstName
-                    guest?.lastname  = lastName
-                    addValueToBooking(data: guest!)
-                    return "Hallo <strong>" + firstName + "</strong> <strong>" + lastName + "</strong>. Welcome to our hotel. <br>" + getNextQuestion()
-                }
-                return "We are sorry but I did not understand you right.<br>" + getNextQuestion()
-                
-            case "hasMailaddress":
-                let mail: String = Utilities.getMailAddressFromText(text) ?? ""
-                
-                if guest != nil && guest?.firstname?.count ?? 0 > 0 && guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
-                    guest?.mailaddress = mail
-                }
-                else if mail.count > 0 {
-                    let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
-                    if guestDB != nil {
-                        addValueToBooking(data: guestDB!)
-                    }
-                }
-                else {
-                    writeNewTraingsdataToFile()
-                    return String("I'm sorry but I could not understand you.<br>" + getNextQuestion())
-                }
-                if workBooking?.guest != nil {
-                    let firstName: String = workBooking?.guest?.firstname ?? ""
-                    let lastName:  String = workBooking?.guest?.lastname  ?? ""
-                    return "Hallo " + "<strong>" + firstName + "</strong>" + " " + "<strong>" + lastName + "</strong>" + ". Welcome to our hotel. <br>" + getNextQuestion()
-                }
-                else {
-                    return "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>" + getNextQuestion()
-                }
-
-            case "numberOfGuests":
-                let numberOfGuests = valueForNumbers(tagname: "number", text: text)
-                if workBooking?.startDate != nil && workBooking?.endDate != nil && numberOfGuests > 0 {
-                    let bookedRoomCount: Int = workBooking?.bookRooms(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!, countPersons: numberOfGuests) ?? 0
-                    if bookedRoomCount > 0 {
-                        return "We have booked \(String(bookedRoomCount)) rooms for you.<br>" + getNextQuestion()
-                    }
-                    else {
-                        return "We are sorry but we have not enough free rooms available.<br>" + getNextQuestion()
-                    }
-                }
-                return "We are sorry but we could not understand how many you are. Please try it again.<br>" + getNextQuestion()
-                
-            case "hasDates":
-                let dates: [Date]? = valueForDates(text: text, language: languageRecog.dominantLanguage?.rawValue ?? "en")
-                if workBooking != nil && dates?.count == 2 && dates?[0].compare((dates?[1])!) == .orderedAscending {
-                    workBooking?.startDate = dates![0]
-                    workBooking?.endDate   = dates![1]
-                    return "Thank you for the dates.<br>" + getNextQuestion()
-                }
-                return "we are sorry but we could not recognize the dates. We prefere a format in yyyy-mm-dd.<br>" + getNextQuestion()
-                
-            case "positive-hasChildren":
-                workBooking?.numberOfChildren = 1
-                return "We have noticed a child.<br>" + getNextQuestion()
-            case "negative-hasChildren":
-                workBooking?.numberOfChildren = 0
-                return "We have noticed no children.<br>" + getNextQuestion()
-                
-            case "privateVisit":
-                workBooking?.guestType = "Private"
-                return "We have noticed your visit as a private visit.<br>" + getNextQuestion()
-            case "businessVisit":
-                workBooking?.guestType = "Business"
-                return "We have noticed your visit as a business visit.<br>" + getNextQuestion()
-                
-            case "hasPhonenumber":
-                let phoneNumberString: String = valueForPhone(text: text)
-                workBooking?.guest?.phonenumber = phoneNumberString
-                return "Thank you for your phonenumber.<br>" + getNextQuestion()
-                
-            case "positive-breakfast":
-                workBooking?.breakfast = true
-                return "Breakfast is noticed.<br>" + getNextQuestion()
-            case "negative-breakfast":
-                workBooking?.breakfast = false
-                return "It is noticed that you do not want to have breakfast.<br>" + getNextQuestion()
-                
-            case "positive-parking":
-                if workBooking?.startDate != nil && workBooking?.endDate != nil {
-                    if workBooking?.bookParking(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!) ?? false {
-                        return "Parking is noticed.<br>" + getNextQuestion()
-                    }
-                    else {
-                        return "We are sorry but we do not have a free parking place for you.<br>" + getNextQuestion()
-                    }
-                }
-                return "Before we can book a parking place we need your arrival and departure dates.<br>" + getNextQuestion()
-            case "negative-parking":
-                return "It is noticed that you do not need a parking place.<br>" + getNextQuestion()
-            
-            case "number-answer":
-                return "Thank you<br>" + getNextQuestion()
-                
-            case "room-price":
-                return Booking.roomPrices() + "<br>" + getNextQuestion()
-            case "free-room":
-                if workBooking?.startDate != nil && workBooking?.endDate != nil && workBooking?.numberOfGuests != nil {
-                    return Booking.freeRooms(fromDate: workBooking!.startDate!, toDate: workBooking!.endDate!, countPersons: Int(workBooking!.numberOfGuests)) + "<br>" + getNextQuestion()
-                }
-                return "Please give us your visit dates and how many you are.<br>" + getNextQuestion()
-            default:
-                break
-            }
-        }
-        else {
-            return String("I'm sorry but I miss a NLP model, please ask the developer.")
-        }
-        
-        writeNewTraingsdataToFile()
-        return String("I'm sorry but I could not understand you.<br>" + getNextQuestion())
-    }
-    
-    
     /**
         We have a new trainings sentence and we remember it for generating a file later
      */
@@ -679,7 +776,7 @@ class ChatController: NSObject {
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-        let test = workBooking?.bookingComplete()
+        // let test = workBooking?.bookingComplete()
 
         for workflow in workflows {
             if workflow.questionNumber < actStep {
@@ -697,76 +794,7 @@ class ChatController: NSObject {
             }
         }
         return "I'm sorry but I did not understand you."
-/*
-        if workBooking == nil {
-            askedQuestion = 0
-            return "Please give me your firstname and lastname or your eMail address when you have already been a guest at our hotel."
-        }
-        if workBooking?.guest == nil {
-            askedQuestion = 1
-            return "Please name me your firstname and your lastname or your mail address if you don't stay the first time at our hotel, thanks."
-        }
-        if workBooking?.guest?.firstname == nil  {
-            askedQuestion = 2
-            return "Please name me your firstname and your lastname, thanks."
-        }
-        if workBooking?.startDate == nil && workBooking?.endDate == nil {
-            askedQuestion = 3
-            return "From when to when would you like to stay?"
-        }
-        if workBooking?.startDate == nil {
-            askedQuestion = 4
-            return "When will you arrive?"
-        }
-        if workBooking?.endDate == nil {
-            askedQuestion = 5
-            return "When will you leave?"
-        }
-        if workBooking?.numberOfGuests == nil || workBooking?.numberOfGuests == 0 {
-            askedQuestion = 6
-            return "How many persons want to overnight?"
-        }
-        if workBooking?.numberOfChildren == nil && workBooking?.numberOfGuests ?? 0 > 2 {
-            askedQuestion = 7
-            return "How many children are with you?"
-        }
-        if workBooking?.breakfast == nil {
-            askedQuestion = 8
-            return "Do you like to have breakfast in the mornings?"
-        }
-        if workBooking?.guestType == nil && (workBooking?.numberOfChildren == nil || workBooking?.numberOfChildren == 0) {
-            askedQuestion = 9
-            return "Is this a private or business visit?"
-        }
-        if workBooking?.paymentMethod == nil {
-            askedQuestion = 10
-            return "How do you like to pay (credit card or cash)?"
-        }
-        if workBooking?.parkings == nil {
-            askedQuestion = 11
-            return "Do you need a parking place?"
-        }
-        if workBooking?.guest?.phonenumber == nil {
-            askedQuestion = 12
-            return "Please give us your phonenumber where we can reach you if we have questions."
-        }
-        if workBooking?.guest?.mailaddress == nil {
-            askedQuestion = 13
-            return "Please give me your mail address where we can send the confirmation mail."
-        }
-        else if workBooking?.state == nil {
-            askedQuestion = 14
-            return "The booking is complete. Please verify your values and confirm them with yes, otherwise no.<br>" + (workBooking?.toHTML() ?? "")
-        }
-        else if workBooking?.state == "booked" {
-            askedQuestion = 15
-            return "Thank you for your booking. We send you a confirmation mail. Good bye."
-        }
-        else {
-            askedQuestion = 16
-            return "We are sorry but we did not understand you."
-        }
- */
+
     }
     
 }

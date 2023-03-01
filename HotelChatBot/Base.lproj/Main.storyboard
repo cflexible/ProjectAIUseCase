@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <plugIn identifier="com.apple.WebKit2IBPlugin" version="21507"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -151,6 +152,86 @@
             </objects>
             <point key="canvasLocation" x="711" y="232"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="4qd-lg-bT6">
+            <objects>
+                <windowController storyboardIdentifier="LanguageQuestionWindow" id="jis-do-Way" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="tDK-9d-Ny4">
+                        <windowStyleMask key="styleMask" titled="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="947" y="760" width="480" height="135"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="5120" height="2135"/>
+                        <view key="contentView" id="Ckb-lI-yY9">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="135"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="jis-do-Way" id="11K-d1-uJS"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="a8L-1S-o2Q" kind="relationship" relationship="window.shadowedContentViewController" id="iO9-j7-NeY"/>
+                    </connections>
+                </windowController>
+                <customObject id="gbO-I3-nUU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="707" y="681"/>
+        </scene>
+        <!--Language Window Controller-->
+        <scene sceneID="zoF-o3-x89">
+            <objects>
+                <viewController storyboardIdentifier="LanguageQuestionController" id="a8L-1S-o2Q" customClass="LanguageWindowController" customModule="HotelChatBot" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Ngx-CZ-Yx8">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="135"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hzi-ib-1GG">
+                                <rect key="frame" x="18" y="71" width="444" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" alignment="center" title="Your current language is German. Would you like to switch to English?" id="wER-9y-wOx">
+                                    <font key="font" metaFont="system" size="17"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="HbA-yz-xaj">
+                                <rect key="frame" x="35" y="16" width="104" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="daQ-Db-fV3">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancelOperation:" target="a8L-1S-o2Q" id="TLb-gm-8fn"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JTG-u6-xJc">
+                                <rect key="frame" x="340" y="16" width="104" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Switch" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yf9-RQ-gcP">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <color key="bezelColor" name="AccentColor"/>
+                                <connections>
+                                    <action selector="switchPressed:" target="a8L-1S-o2Q" id="0hQ-jS-U9Y"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="HbA-yz-xaj" id="sHt-N9-x5g"/>
+                        <outlet property="questionlabel" destination="hzi-ib-1GG" id="tNJ-ki-K3t"/>
+                        <outlet property="switchButton" destination="JTG-u6-xJc" id="bxJ-4f-pQt"/>
+                    </connections>
+                </viewController>
+                <customObject id="iaa-5c-9m2" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1354" y="680.5"/>
+        </scene>
         <!--Information about this chatbot-->
         <scene sceneID="QBu-ww-0ZO">
             <objects>
@@ -243,4 +324,9 @@
             <point key="canvasLocation" x="75" y="655"/>
         </scene>
     </scenes>
+    <resources>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

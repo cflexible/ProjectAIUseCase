@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A3B4DBC29AF7451003759E4 /* LanguageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */; };
 		0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B529A88D75000F7DFF /* Translations.swift */; };
 		0A3D13B829A8915F000F7DFF /* DataLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B729A8915F000F7DFF /* DataLoad.swift */; };
 		0A3D13BA29A891BA000F7DFF /* BaseData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A3D13B929A891BA000F7DFF /* BaseData.plist */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageWindowController.swift; sourceTree = "<group>"; };
 		0A3D13B529A88D75000F7DFF /* Translations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translations.swift; sourceTree = "<group>"; };
 		0A3D13B729A8915F000F7DFF /* DataLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoad.swift; sourceTree = "<group>"; };
 		0A3D13B929A891BA000F7DFF /* BaseData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = BaseData.plist; sourceTree = "<group>"; };
@@ -105,7 +107,6 @@
 		0A7939BB29A4B2F300F7D000 /* HotelChatBot */ = {
 			isa = PBXGroup;
 			children = (
-				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0A7939BC29A4B2F300F7D000 /* AppDelegate.swift */,
 				0A7939BE29A4B2F300F7D000 /* ViewController.swift */,
 				0A7939C229A4B2F300F7D000 /* Main.storyboard */,
@@ -124,6 +125,7 @@
 				0A4BD2F329A7951500BB2D01 /* GuestSmiley.png */,
 				0A4BD2F629A7955200BB2D01 /* Zum_taenzelnden_Pony_256.png */,
 				0A4BD2F829A7AE7700BB2D01 /* HelpViewController.swift */,
+				0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */,
 				0A4BD2FC29A7BAE600BB2D01 /* DatastoreController.swift */,
 				0A3D13B729A8915F000F7DFF /* DataLoad.swift */,
 				0A3D13B929A891BA000F7DFF /* BaseData.plist */,
@@ -246,6 +248,7 @@
 				0AECEC4F29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel in Sources */,
 				0A4BD2ED29A78BF200BB2D01 /* OutputViewGenerator.swift in Sources */,
 				0AFCBF1B29AC854F0056F007 /* ClassifierHelper.swift in Sources */,
+				0A3B4DBC29AF7451003759E4 /* LanguageWindowController.swift in Sources */,
 				0A7939BF29A4B2F300F7D000 /* ViewController.swift in Sources */,
 				0AFCBF1E29ACA13E0056F007 /* HotelChatbotModel.xcdatamodel in Sources */,
 				0AECEC5529ABB724005554D6 /* HotelChatbotTextClassifier 3.mlmodel in Sources */,
