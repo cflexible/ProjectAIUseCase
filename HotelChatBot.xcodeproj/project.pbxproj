@@ -26,6 +26,7 @@
 		0A7939BF29A4B2F300F7D000 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7939BE29A4B2F300F7D000 /* ViewController.swift */; };
 		0A7939C129A4B2F300F7D000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A7939C029A4B2F300F7D000 /* Assets.xcassets */; };
 		0A7939C429A4B2F300F7D000 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A7939C229A4B2F300F7D000 /* Main.storyboard */; };
+		0AAD97AA29AE00110075264E /* BookingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAD97A929AE00110075264E /* BookingExtensions.swift */; };
 		0ABCB69829AA617300B89FA7 /* BookingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABCB69729AA617300B89FA7 /* BookingController.swift */; };
 		0AECEC4F29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0AECEC4E29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel */; };
 		0AECEC5129ABB376005554D6 /* HotelChatBotTagger 3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0AECEC5029ABB376005554D6 /* HotelChatBotTagger 3.mlmodel */; };
@@ -60,6 +61,7 @@
 		0A7939C029A4B2F300F7D000 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0A7939C329A4B2F300F7D000 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0A7939C529A4B2F300F7D000 /* HotelChatBot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HotelChatBot.entitlements; sourceTree = "<group>"; };
+		0AAD97A929AE00110075264E /* BookingExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingExtensions.swift; sourceTree = "<group>"; };
 		0ABCB69729AA617300B89FA7 /* BookingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingController.swift; sourceTree = "<group>"; };
 		0AECEC4E29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "HotelChatBotTagger 2.mlmodel"; sourceTree = "<group>"; };
 		0AECEC5029ABB376005554D6 /* HotelChatBotTagger 3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "HotelChatBotTagger 3.mlmodel"; sourceTree = "<group>"; };
@@ -103,15 +105,16 @@
 		0A7939BB29A4B2F300F7D000 /* HotelChatBot */ = {
 			isa = PBXGroup;
 			children = (
-				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0A7939BC29A4B2F300F7D000 /* AppDelegate.swift */,
 				0A7939BE29A4B2F300F7D000 /* ViewController.swift */,
+				0A7939C229A4B2F300F7D000 /* Main.storyboard */,
+				0AFCBF1D29ACA13E0056F007 /* HotelChatbotModel.xcdatamodel */,
+				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
+				0AAD97A929AE00110075264E /* BookingExtensions.swift */,
 				0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */,
 				0ABCB69729AA617300B89FA7 /* BookingController.swift */,
 				0A7939C029A4B2F300F7D000 /* Assets.xcassets */,
-				0A7939C229A4B2F300F7D000 /* Main.storyboard */,
 				0A7939C529A4B2F300F7D000 /* HotelChatBot.entitlements */,
-				0AFCBF1D29ACA13E0056F007 /* HotelChatbotModel.xcdatamodel */,
 				0A4BD2FA29A7AEDF00BB2D01 /* Localizable.strings */,
 				0A4BD2EC29A78BF200BB2D01 /* OutputViewGenerator.swift */,
 				0A4BD2EE29A78C9400BB2D01 /* preBody.txt */,
@@ -227,6 +230,7 @@
 				0A4BD2FF29A7BB0A00BB2D01 /* Utilities.swift in Sources */,
 				0AECEC5729ABB7EB005554D6 /* HotelChatbotTextClassifier 4.mlmodel in Sources */,
 				0AECEC5129ABB376005554D6 /* HotelChatBotTagger 3.mlmodel in Sources */,
+				0AAD97AA29AE00110075264E /* BookingExtensions.swift in Sources */,
 				0AFCBF2929ACFCDD0056F007 /* Extensions.swift in Sources */,
 				0AECEC5329ABB464005554D6 /* HotelChatbotTextClassifier 2.mlmodel in Sources */,
 				0A3D13C029A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel in Sources */,

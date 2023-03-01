@@ -38,9 +38,14 @@ class DataLoad: NSObject {
             let attributes: workflowAttributes
         }
         struct workflowAttributes: Codable {
-            let orderNumber:  Int
-            let englishText:  String
-            let isQuestion:   Bool
+            let questionNumber:     Int
+            let englishText:        String
+            let negativeAnswer:     String
+            let positiveAnswer:     String
+            let checkAttributename: String
+            let checkFunction:      String
+            let checkValue:         String
+            let helpText:           String
         }
 
     }
@@ -96,17 +101,27 @@ class DataLoad: NSObject {
             
             // if we have workflow values we edit them here
             for workflow in appValues.workflows {
-                let workflowObject: Workflow? = DatastoreController.shared.entityByName("Workflow", key: "orderNumber", value: workflow.attributes.orderNumber as NSObject) as? Workflow
+                let workflowObject: Workflow? = DatastoreController.shared.entityByName("Workflow", key: "questionNumber", value: workflow.attributes.questionNumber as NSObject) as? Workflow
                 if workflowObject != nil {
-                    workflowObject!.englishText      = workflow.attributes.englishText
-                    workflowObject!.isQuestion       = workflow.attributes.isQuestion
+                    workflowObject!.englishText        = workflow.attributes.englishText
+                    workflowObject!.negativeAnswer     = workflow.attributes.negativeAnswer
+                    workflowObject!.positiveAnswer     = workflow.attributes.positiveAnswer
+                    workflowObject!.checkAttributename = workflow.attributes.checkAttributename
+                    workflowObject!.checkFunction      = workflow.attributes.checkFunction
+                    workflowObject!.checkValue         = workflow.attributes.checkValue
+                    workflowObject!.helpText           = workflow.attributes.helpText
                     _ = DatastoreController.shared.saveToPersistentStore()
                 }
                 else {
                     var newWorkflowObject: Workflow = DatastoreController.shared.createNewEntityByName("Workflow") as! Workflow
-                    newWorkflowObject.orderNumber      = Int16(workflow.attributes.orderNumber)
-                    newWorkflowObject.englishText      = workflow.attributes.englishText
-                    newWorkflowObject.isQuestion       = workflow.attributes.isQuestion
+                    newWorkflowObject.questionNumber      = Int16(workflow.attributes.questionNumber)
+                    newWorkflowObject.englishText         = workflow.attributes.englishText
+                    newWorkflowObject.negativeAnswer      = workflow.attributes.negativeAnswer
+                    newWorkflowObject.positiveAnswer      = workflow.attributes.positiveAnswer
+                    newWorkflowObject.checkAttributename  = workflow.attributes.checkAttributename
+                    newWorkflowObject.checkFunction       = workflow.attributes.checkFunction
+                    newWorkflowObject.checkValue          = workflow.attributes.checkValue
+                    newWorkflowObject.helpText            = workflow.attributes.helpText
                     _ = DatastoreController.shared.saveToPersistentStore()
                 }
             }

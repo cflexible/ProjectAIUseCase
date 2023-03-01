@@ -8,8 +8,8 @@
         <attribute name="guestType" optional="YES" attributeType="String" defaultValueString="business"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="numberOfChildren" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="numberOfGuests" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="numberOfChildren" attributeType="Integer 16" usesScalarValueType="YES"/>
+        <attribute name="numberOfGuests" attributeType="Integer 16" usesScalarValueType="YES"/>
         <attribute name="paymentMethod" attributeType="String"/>
         <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="state" attributeType="String"/>
@@ -18,6 +18,9 @@
         <relationship name="rooms" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Room"/>
     </entity>
     <entity name="Classifierdefinitions" representedClassName="Classifierdefinitions" syncable="YES" codeGenerationType="class">
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="language" attributeType="String" defaultValueString="en"/>
+        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="text" attributeType="String"/>
         <attribute name="theClassifier" attributeType="String"/>
     </entity>
@@ -63,19 +66,23 @@
         <attribute name="sourceString" attributeType="String"/>
         <attribute name="translation" attributeType="String"/>
     </entity>
+    <entity name="Wordtaggingdefinitions" representedClassName="Wordtaggingdefinitions" syncable="YES" codeGenerationType="class">
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="language" attributeType="String" defaultValueString="en"/>
+        <attribute name="modifyDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="tagList" attributeType="String"/>
+        <attribute name="wordList" attributeType="String"/>
+    </entity>
     <entity name="Workflow" representedClassName="Workflow" syncable="YES" codeGenerationType="class">
+        <attribute name="checkAttributename" attributeType="String"/>
+        <attribute name="checkFunction" optional="YES" attributeType="String"/>
+        <attribute name="checkValue" optional="YES" attributeType="String"/>
         <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="englishText" attributeType="String"/>
-        <attribute name="isQuestion" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="helpText" attributeType="String"/>
         <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="orderNumber" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="nextSteps" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkflowRules"/>
-    </entity>
-    <entity name="WorkflowRules" representedClassName="WorkflowRules" syncable="YES" codeGenerationType="class">
-        <attribute name="answerReferenceToUser" attributeType="String"/>
-        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="modifyDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="nextStep" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="rule" attributeType="String"/>
+        <attribute name="negativeAnswer" optional="YES" attributeType="String"/>
+        <attribute name="positiveAnswer" optional="YES" attributeType="String"/>
+        <attribute name="questionNumber" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 </model>

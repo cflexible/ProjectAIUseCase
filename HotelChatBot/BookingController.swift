@@ -42,9 +42,9 @@ class BookingController: NSObject {
         bookingWorkObject.booking = booking
         for attribut in booking.attributeKeys {
             let value = booking.value(forKey: attribut)
-            
         }
     }
+    
     
     
     func loadStatus() {

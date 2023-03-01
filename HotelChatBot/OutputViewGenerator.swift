@@ -20,6 +20,10 @@ class OutputViewGenerator: NSObject {
         we initialize the variables which holds the html code til the body and to close the body / html from to text files from the app resources
      */
     override init() {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         super.init()
         
         // we load the html text with the header, the style information and the beginning of the body into the variable
@@ -66,6 +70,10 @@ class OutputViewGenerator: NSObject {
         @Return    String with the HTML
      */
     func newHotelChat(text: String) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         var html: String = "<div align=\"left\">\n"
         html = html + "<p class=\"from-hotel\">" + text + "</p>\n"
         html = html + "<img class=\"hotelimage\" id=\"base64-hotel-img\" alt=\"\"/>\n"
@@ -82,6 +90,10 @@ class OutputViewGenerator: NSObject {
         @Return    String with the HTML
      */
     func newGuestChat(text: String) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         var html: String = "<div align=\"right\">\n"
         html = html + "<p class=\"from-guest\">" + text + "</p>\n"
         html = html + "<img class=\"guestimage\" id=\"base64-guest-img\" alt=\"\"/>\n"
@@ -97,6 +109,10 @@ class OutputViewGenerator: NSObject {
         @Return    String with the HTML
      */
     private func createHtml() -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         var html: String = preBody;
         for text: String in entries {
             html = html + text
@@ -113,6 +129,10 @@ class OutputViewGenerator: NSObject {
  */
 extension NSImage {
     var base64String:String? {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         guard let rep = NSBitmapImageRep(
             bitmapDataPlanes: nil,
             pixelsWide: Int(size.width),

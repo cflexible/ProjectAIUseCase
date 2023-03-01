@@ -386,6 +386,8 @@ class Utilities: NSObject {
         var localeIdentifier: String = "en_GB"
         var dateString: String = ""
         var year = year ?? actualYear()
+        var foundDate: Date?
+        let dateFormats: [String] = ["yy-MM-dd", "yyyy-MM-dd", "yyyy-MMM-dd", "yyyy-MMMM-dd"]
         
         if language != nil {
             switch language! {
@@ -405,13 +407,15 @@ class Utilities: NSObject {
         }
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: localeIdentifier)
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        if let date = dateFormatter.date(from: dateString) {
-            return date
-        } else {
-            print("Invalid date format")
-            return nil
+        for i in 0..<dateFormats.count {
+            dateFormatter.dateFormat = dateFormats[i]
+            foundDate = dateFormatter.date(from: dateString)
+            if foundDate != nil  {
+                return foundDate
+            }
         }
+        print("Invalid date format")
+        return nil
     }
     
     

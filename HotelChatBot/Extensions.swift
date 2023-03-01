@@ -9,6 +9,9 @@ import Foundation
 
 
 public extension String {
+    /**
+        In this function we return a part of the string if it maches the given regex. We use this e.g. to extract an eMail from a text.
+     */
     func matching(regex: String) throws -> [String] {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: self, range: NSRange(startIndex..., in: self))
@@ -17,108 +20,76 @@ public extension String {
 }
 
 
+/**
+    This method gives us a concrete number for a word. we use this to get number from word like first, second or ordinals like 1st
+ */
 public extension String {
-    func wordToInteger() -> Int? {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .spellOut
-        return  numberFormatter.number(from: self) as? Int
-    }
-}
-
-
-public extension Booking {
-    func toHTML() -> String {
-        var boolString = ""
-        var bookingStyle = ""
+    /**
+        Transformation of a string if it is a named integer like first to a real Int which we can use easier
+     */
+    func wordToIntegerString(language: String) -> String? {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
         
-        if let path = Bundle.main.path(forResource: "BookingHtmlStyle", ofType: "txt") {
-            do {
-                try bookingStyle = String(contentsOfFile: path)
-            }
-            catch  {
-                print("error trying to load preBodyfile")
-                return ""
-            }
-        }
+        let locale = Locale(identifier: language)
+        
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = locale
 
-        var html: String = "<style>" + bookingStyle + "</style>"
-        html = html + "<div>"
-        html = html + "<div class=\"divTable blueTable\">"
-        html = html + "<div class=\"divTableHeading\">"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableHead\">What</div>"
-        html = html + "<div class=\"divTableHead\">Your value</div>"
-        html = html + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableBody\">"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Name</div>"
-        html = html + "<div class=\"divTableCell\">" + (self.guest?.firstname)! + " " + (self.guest?.lastname)! + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Stay from</div>"
-        html = html + "<div class=\"divTableCell\">" + self.startDate!.description + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Stay to</div>"
-        html = html + "<div class=\"divTableCell\">" + self.endDate!.description + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Number of guests</div>"
-        html = html + "<div class=\"divTableCell\">" + String(self.numberOfGuests) + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Number of children</div>"
-        html = html + "<div class=\"divTableCell\">" + String(self.numberOfChildren) + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">With breakfast</div>"
-        if breakfast {
-            boolString = NSLocalizedString("YES", comment: "")
+        var resultNumber: Int? = nil
+        // we test if the string is a normal number
+        numberFormatter.numberStyle = .none
+        resultNumber = numberFormatter.number(from: self) as? Int
+        // if it was not a normal number, was it a word?
+        if resultNumber == nil {
+            numberFormatter.numberStyle = .spellOut
+            resultNumber = numberFormatter.number(from: self) as? Int
         }
-        else {
-            boolString = NSLocalizedString("NO", comment: "")
+        // if it is still unknown it is perhaps an ordinal
+        if resultNumber == nil {
+            numberFormatter.numberStyle = .ordinal
+            resultNumber = numberFormatter.number(from: self) as? Int
         }
-        html = html + "<div class=\"divTableCell\">" + boolString + "</div>"
-        html = html + "</div>"
-        if parkings?.count ?? 0 > 0 {
-            boolString = NSLocalizedString("YES", comment: "")
+        
+        var resultString = self
+        if resultNumber != nil {
+            resultString = String(resultNumber!)
         }
-        else {
-            boolString = NSLocalizedString("NO", comment: "")
+        return resultString
+    }
+    
+    
+    /**
+        Of a concatinated string we would like to have the part before a delimiter
+     */
+    func before(first delimiter: Character) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        if let index = firstIndex(of: delimiter) {
+            let before = prefix(upTo: index)
+            return String(before)
         }
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Parkingplace</div>"
-        html = html + "<div class=\"divTableCell\">" + boolString + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Visit type</div>"
-        html = html + "<div class=\"divTableCell\">" + self.guestType! + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Payment type</div>"
-        html = html + "<div class=\"divTableCell\">" + self.paymentMethod! + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Phone</div>"
-        html = html + "<div class=\"divTableCell\">" + (self.guest?.phonenumber)! + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Mail</div>"
-        html = html + "<div class=\"divTableCell\">" + (self.guest?.mailaddress)! + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Booked rooms</div>"
-        html = html + "<div class=\"divTableCell\">" + String(self.rooms!.count) + "</div>"
-        html = html + "</div>"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Comment</div>"
-        html = html + "<div class=\"divTableCell\">" + (self.comment ?? "") + "</div>"
-        html = html + "</div>"
-        html = html + "</div>"
-        html = html + "</div>"
-        html = html + "</div>"
-        html = html + "</div>"
-        return html
+        return ""
+    }
+    
+    
+    /**
+        Of a concatinated string we would like to have the part after a delimiter
+     */
+    func after(first delimiter: Character) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+        
+        if let index = firstIndex(of: delimiter) {
+            let after = suffix(from: index).dropFirst()
+            return String(after)
+        }
+        return ""
     }
 }
+
+

@@ -7,12 +7,379 @@
 		<dict>
 			<key>attributes</key>
 			<dict>
-				<key>orderNumber</key>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>workBooking</string>
+				<key>questionNumber</key>
+				<integer>-1</integer>
+				<key>englishText</key>
+				<string>Hello&lt;br&gt;Welcome to our beautiful hotel &lt;br&gt;&lt;strong&gt;&quot;To the Prancing Pony&quot;&lt;/strong&gt;&lt;br&gt;I am your booking assistent and I guide you through the booking process.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string>I&apos;m sorry, but I did not understand you. Please use the words firstname and lastname.</string>
+				<key>positiveAnswer</key>
+				<string>Thanks for names</string>
+				<key>checkAttributename</key>
+				<string>guest.firstname</string>
+				<key>questionNumber</key>
 				<integer>0</integer>
 				<key>englishText</key>
-				<string>Hello&lt;br&gt;Welcome to our beautiful hotel &lt;br&gt;&lt;strong&gt;&quot;To the Prancing Pony&quot;&lt;/strong&gt;&lt;br&gt;I am your booking assistent and I guide you through the booking process.&lt;br&gt;Please give me you first and lastname or your eMail address when you have already been a guest at our hotel.</string>
-				<key>isQuestion</key>
-				<true/>
+				<string>Please give me your firstname and lastname&lt;br&gt;or your eMail address when you have already been a guest at our hotel.</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>guest</string>
+				<key>questionNumber</key>
+				<integer>1</integer>
+				<key>englishText</key>
+				<string>Please name me your firstname and your lastname&lt;br&gt;or your mail address if you don&apos;t stay the first time at our hotel, thanks.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>guest.firstname</string>
+				<key>questionNumber</key>
+				<integer>2</integer>
+				<key>englishText</key>
+				<string>Please name me your firstname and your lastname, thanks.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>startDate</string>
+				<key>questionNumber</key>
+				<integer>3</integer>
+				<key>englishText</key>
+				<string>From when to when would you like to stay?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>startDate</string>
+				<key>questionNumber</key>
+				<integer>4</integer>
+				<key>englishText</key>
+				<string>When will you arrive?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>endDate</string>
+				<key>questionNumber</key>
+				<integer>5</integer>
+				<key>englishText</key>
+				<string>When will you leave?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>numberOfGuests</string>
+				<key>questionNumber</key>
+				<integer>6</integer>
+				<key>englishText</key>
+				<string>How many persons want to overnight?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string>==</string>
+				<key>checkValue</key>
+				<string>0</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>numberOfChildren</string>
+				<key>questionNumber</key>
+				<integer>7</integer>
+				<key>englishText</key>
+				<string>How many children are with you?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string>numberOfGuests &gt;</string>
+				<key>checkValue</key>
+				<string>2</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>breakfast</string>
+				<key>questionNumber</key>
+				<integer>8</integer>
+				<key>englishText</key>
+				<string>Do you like to have breakfast in the mornings?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>guestType</string>
+				<key>questionNumber</key>
+				<integer>9</integer>
+				<key>englishText</key>
+				<string>Is this a private or business visit?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>paymentMethod</string>
+				<key>questionNumber</key>
+				<integer>10</integer>
+				<key>englishText</key>
+				<string>How do you like to pay (credit card or cash)?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>parkings</string>
+				<key>questionNumber</key>
+				<integer>11</integer>
+				<key>englishText</key>
+				<string>Do you need a parking place?&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>guest.phonenumber</string>
+				<key>questionNumber</key>
+				<integer>12</integer>
+				<key>englishText</key>
+				<string>Please give us your phonenumber where we can reach you if we have questions.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>guest.mailaddress</string>
+				<key>questionNumber</key>
+				<integer>13</integer>
+				<key>englishText</key>
+				<string>Please give me your mail address where we can send the confirmation mail.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>state</string>
+				<key>questionNumber</key>
+				<integer>14</integer>
+				<key>englishText</key>
+				<string>The booking is complete. Please verify your values and confirm them with yes, otherwise no.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>state</string>
+				<key>questionNumber</key>
+				<integer>15</integer>
+				<key>englishText</key>
+				<string>Thank you for your booking. We send you a confirmation mail. Good bye.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string>==</string>
+				<key>checkValue</key>
+				<string>booked</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>negativeAnswer</key>
+				<string></string>
+				<key>positiveAnswer</key>
+				<string></string>
+				<key>checkAttributename</key>
+				<string>workBooking</string>
+				<key>questionNumber</key>
+				<integer>16</integer>
+				<key>englishText</key>
+				<string>We are sorry but we did not understand you.&lt;br&gt;</string>
+				<key>helpText</key>
+				<string>No help available at the moment.</string>
+				<key>checkFunction</key>
+				<string></string>
+				<key>checkValue</key>
+				<string></string>
 			</dict>
 		</dict>
 	</array>

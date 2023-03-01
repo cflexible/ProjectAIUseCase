@@ -62,7 +62,10 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
 
         self.view.window?.delegate = self
         self.view.window?.minSize = NSSize(width: 320, height: 300) // We define a minimum size of the window before the HTML view gets broken
+        editField.becomeFirstResponder()
     }
+    
+    
     override var representedObject: Any? {
         didSet {
         // Update the view, if already loaded.
@@ -90,6 +93,8 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
+       if editField.stringValue.count == 0 { return }
+        
         let html: String = outviewGenerator.newGuestChat(text: editField.stringValue)
         webView.loadHTMLString(html, baseURL: nil)
         let text = editField.stringValue
@@ -101,7 +106,13 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             webView.navigationDelegate = self
             webView.loadHTMLString(html, baseURL: nil)
         }
+        if ((newHotelChatString ?? "").contains("Good bye")) {
+            editField.isEditable = false
+            let html: String = outviewGenerator.newHotelChat(text: NSLocalizedString("You can close the window now.", comment: ""))
+            webView.loadHTMLString(html, baseURL: nil)
+        }
     }
+    
     
     /**
         we calculate the height of the text and we grow the height of the text field until it reaches a maximum height of 128
@@ -146,6 +157,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         #endif
         
         webView.scrollPageDown(self)
+        webView.evaluateJavaScript("var scrollingElement = (document.scrollingElement || document.body); scrollingElement.scrollTop = scrollingElement.scrollHeight;")
     }
 
     
@@ -161,4 +173,5 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     }
 
 }
+
 
