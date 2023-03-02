@@ -23,9 +23,7 @@ class HelpViewController: NSViewController {
         
         super.viewDidLoad()
         // Do view setup here.
-        var helptext = NSLocalizedString("Help text", comment: "An information text about the chatbot.")
-        helptext = helptext + "\n\n" + Translations().getTranslation(text: ChatController.workflows[ChatController.askedQuestion + 1].helpText ?? "") // we need + 1 because of array
-        helptextField.stringValue = helptext
+        helptextField.stringValue = NSLocalizedString("Help text", comment: "An information text about the chatbot.")
         okButton.setAccessibilityTitle(NSLocalizedString("Ok", comment: ""))
     }
     

@@ -271,7 +271,7 @@ class ChatController: NSObject {
                     workBooking?.endDate   = dates![1]
                     return "Thank you for the dates.<br>"
                 }
-                return "we are sorry but we could not recognize the dates. We prefere a format in yyyy-mm-dd.<br>"
+                return "We are sorry but we could not recognize the dates. We prefere a format in yyyy-mm-dd.<br>"
                 
             case "positive-hasChildren":
                 workBooking?.numberOfChildren = 1
