@@ -32,6 +32,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
 
         self.view.window?.delegate = self
         editField.delegate = self
+        ChatController.currentLanguage = Utilities.getLanguage().lowercased()
         let html: String = outviewGenerator.newHotelChat(text: ChatController.nextStep())
         webView.navigationDelegate = self
         webView.loadHTMLString(html, baseURL: nil)
@@ -48,7 +49,6 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
 
         super.viewWillAppear()
         self.view.window?.title = NSLocalizedString("To the Prancing Pony booking chatbot", comment: "")
-        ChatController.currentLanguage = Utilities.getLanguage().lowercased()
     }
     
     

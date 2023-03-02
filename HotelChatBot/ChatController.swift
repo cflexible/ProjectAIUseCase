@@ -17,8 +17,6 @@ class ChatController: NSObject {
     static var taggerVersion     = "4"
 
     static var actStep: Int = -1
-    static var newLearnTaggingWordString:  String = ""
-    static var newLearnTaggingString:      String = ""
     static var taggingSentences:           [String] = []
     
     static var workBooking:   Booking?
@@ -26,9 +24,14 @@ class ChatController: NSObject {
     static var askedQuestion: Int = 0
     
     // If the current language is changed we load the language model
-    static var currentLanguage: String = "" {
+    static var currentLanguage: String = "en" {
         didSet {
-            if currentLanguage != oldValue {
+            if currentLanguage != oldValue && Bundle.main.url(forResource: "HotelChatbotTextClassifier_" + currentLanguage + " " + classifierVersion, withExtension: "mlmodelc") != nil {
+                initModels()
+                Translations.translationLanguage = currentLanguage
+            }
+            else {
+                currentLanguage = "en"
                 initModels()
                 Translations.translationLanguage = currentLanguage
             }
@@ -201,7 +204,7 @@ class ChatController: NSObject {
         if classifierModel != nil && taggerModel != nil {
             var classifierLabel = classifierModel!.predictedLabel(for: text)
             // We remember the text
-            ClassifierHelper.addText(text: text, classifierString: classifierLabel)
+            ClassifierHelper.addText(language: currentLanguage, text: text, classifierString: classifierLabel)
             print("Found classifier: \(classifierLabel ?? "")")
             if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
                 classifierLabel = "hasDates"
@@ -237,7 +240,6 @@ class ChatController: NSObject {
                     }
                 }
                 else {
-                    writeNewTraingsdataToFile()
                     return String("I'm sorry but I could not understand you.<br>")
                 }
                 if workBooking?.guest != nil {
@@ -328,7 +330,6 @@ class ChatController: NSObject {
             return String("I'm sorry but I miss a NLP model, please ask the developer.")
         }
         
-        writeNewTraingsdataToFile()
         return String("I'm sorry but I could not understand you.<br>")
     }
     
@@ -347,8 +348,8 @@ class ChatController: NSObject {
         var foundValues: [ValueHypotheseses] = []
 
         // We remember the text to get new classifier trainings data if neccessary
-        newLearnTaggingWordString  = ""
-        newLearnTaggingString      = ""
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
         
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
@@ -360,12 +361,8 @@ class ChatController: NSObject {
                              options: [.omitWhitespace]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
-                if newLearnTaggingWordString.count > 0 {
-                    newLearnTaggingWordString = newLearnTaggingWordString + ", "
-                    newLearnTaggingString     = newLearnTaggingString     + ", "
-                }
-                newLearnTaggingWordString = newLearnTaggingWordString + "\"" + text[tokenRange] + "\""
-                newLearnTaggingString     = newLearnTaggingString     + "\"" + tag.rawValue + "\""
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
                 
                 if tag.rawValue == tagname {
                     let hypotheses =  tagger.tagHypotheses(at: tokenRange.lowerBound, unit: .word, scheme: chatTagScheme, maximumCount: 1)
@@ -376,7 +373,7 @@ class ChatController: NSObject {
             }
             return true
         }
-        addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
         foundValues.sort(by: { $0.hypotheses > $1.hypotheses })
         return foundValues.first?.text ?? ""
     }
@@ -395,9 +392,9 @@ class ChatController: NSObject {
         var foundValues: [ValueHypotheseses] = []
 
         // We remember the text to get new classifier trainings data if neccessary
-        newLearnTaggingWordString  = ""
-        newLearnTaggingString      = ""
-        
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
+
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
@@ -408,13 +405,9 @@ class ChatController: NSObject {
                              options: [.omitWhitespace]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
-                if newLearnTaggingWordString.count > 0 {
-                    newLearnTaggingWordString = newLearnTaggingWordString + ", "
-                    newLearnTaggingString     = newLearnTaggingString     + ", "
-                }
-                newLearnTaggingWordString = newLearnTaggingWordString + "\"" + text[tokenRange] + "\""
-                newLearnTaggingString     = newLearnTaggingString     + "\"" + tag.rawValue + "\""
-                
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
+
                 if tag.rawValue == tagname {
                     let hypotheses =  tagger.tagHypotheses(at: tokenRange.lowerBound, unit: .word, scheme: chatTagScheme, maximumCount: 1)
                     let hypothesisValue = hypotheses.0.values
@@ -424,7 +417,7 @@ class ChatController: NSObject {
             }
             return true
         }
-        addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
         foundValues.sort(by: { $0.hypotheses > $1.hypotheses })
         return foundValues.first?.text ?? ""
     }
@@ -449,9 +442,9 @@ class ChatController: NSObject {
         var toYearString:  String = ""
 
         // We remember the text to get new classifier trainings data if neccessary
-        newLearnTaggingWordString  = ""
-        newLearnTaggingString      = ""
-        
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
+
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
@@ -462,13 +455,9 @@ class ChatController: NSObject {
                              options: [.omitWhitespace, .omitPunctuation]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
-                if newLearnTaggingWordString.count > 0 {
-                    newLearnTaggingWordString = newLearnTaggingWordString + ", "
-                    newLearnTaggingString     = newLearnTaggingString     + ", "
-                }
-                newLearnTaggingWordString = newLearnTaggingWordString + "\"" + text[tokenRange] + "\""
-                newLearnTaggingString     = newLearnTaggingString     + "\"" + tag.rawValue + "\""
-                
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
+
                 let value: String = String(text[tokenRange])
                 switch tag.rawValue {
                 case "from-month-day":
@@ -602,7 +591,7 @@ class ChatController: NSObject {
             }
             return true
         }
-        addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
 
        if fromYearString.count == 0 {
             fromYearString = Utilities.actualYear()
@@ -639,9 +628,9 @@ class ChatController: NSObject {
         var foundValues: [ValueHypotheseses] = []
 
         // We remember the text to get new classifier trainings data if neccessary
-        newLearnTaggingWordString  = ""
-        newLearnTaggingString      = ""
-        
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
+
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
@@ -652,13 +641,9 @@ class ChatController: NSObject {
                              options: [.omitWhitespace]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
-                if newLearnTaggingWordString.count > 0 {
-                    newLearnTaggingWordString = newLearnTaggingWordString + ", "
-                    newLearnTaggingString     = newLearnTaggingString     + ", "
-                }
-                newLearnTaggingWordString = newLearnTaggingWordString + "\"" + text[tokenRange] + "\""
-                newLearnTaggingString     = newLearnTaggingString     + "\"" + tag.rawValue + "\""
-                
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
+
                 if tag.rawValue == tagname {
                     let hypotheses =  tagger.tagHypotheses(at: tokenRange.lowerBound, unit: .word, scheme: chatTagScheme, maximumCount: 1)
                     let hypothesisValue = hypotheses.0.values
@@ -668,7 +653,7 @@ class ChatController: NSObject {
             }
             return true
         }
-        addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
         foundValues.sort(by: { $0.hypotheses > $1.hypotheses })
         return Int(foundValues.first?.text.wordToIntegerString(language: languageRecog.dominantLanguage?.rawValue ?? "") ?? "") ?? 0
     }
@@ -688,9 +673,9 @@ class ChatController: NSObject {
         var resultPhoneNumber = ""
 
         // We remember the text to get new classifier trainings data if neccessary
-        newLearnTaggingWordString  = ""
-        newLearnTaggingString      = ""
-        
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
+
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
@@ -704,58 +689,16 @@ class ChatController: NSObject {
                 if tag.rawValue == tagname {
                     resultPhoneNumber += text[tokenRange]
                 }
-                if newLearnTaggingWordString.count > 0 {
-                    newLearnTaggingWordString = newLearnTaggingWordString + ", "
-                    newLearnTaggingString     = newLearnTaggingString     + ", "
-                }
-                newLearnTaggingWordString = newLearnTaggingWordString + "\"" + text[tokenRange] + "\""
-                newLearnTaggingString     = newLearnTaggingString     + "\"" + tag.rawValue + "\""
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
             }
             return true
         }
-        addTraingsdata(classifierText: text, taggingWords: newLearnTaggingWordString, taggingTags: newLearnTaggingString)
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
         return resultPhoneNumber
     }
 
 
-    /**
-        We have a new trainings sentence and we remember it for generating a file later
-     */
-    static func addTraingsdata(classifierText: String!, taggingWords: String, taggingTags: String) {
-        #if DEBUG
-            NSLog("\(type(of: self)) \(#function)()")
-        #endif
-
-        if classifierText.isEmpty || taggingWords.isEmpty || taggingTags.isEmpty {
-            return
-        }
-        taggingSentences.append("{\n    \"tokens\":[" + taggingWords + "],\n    \"labels\": [" + taggingTags + "]\n},\n")
-    }
-    
-    
-    /**
-        Wir schreiben zwei Dateien mit zukünftigen Trainingsdaten als Basis
-     */
-    static func writeNewTraingsdataToFile() {
-        #if DEBUG
-            NSLog("\(type(of: self)) \(#function)()")
-        #endif
-
-        let desktopPath = (NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true) as [String]).first
-        if desktopPath == nil { return }
-
-        let taggerFilename: String = desktopPath! + "/NewTaggerTrainingdata.json"
-        if let trainingHandle = try? FileHandle(forWritingTo: URL(fileURLWithPath: taggerFilename)) {
-            trainingHandle.seekToEndOfFile() // moving pointer to the end
-
-            for theString in taggingSentences {
-                trainingHandle.write(theString.data(using: .utf8)!)
-            }
-            trainingHandle.closeFile() // closing the file
-        }
-    }
-    
-    
     static func addValueToBooking(data: NSObject) {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")

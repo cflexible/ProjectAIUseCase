@@ -12,18 +12,19 @@ class ClassifierHelper: NSObject {
     /**
      we add a new text to the table
      */
-    static func addText(text: String, classifierString: String?) {
-#if DEBUG
-        NSLog("\(type(of: self)) \(#function)()")
-#endif
+    static func addText(language: String, text: String, classifierString: String?) {
+        #if DEBUG
+                NSLog("\(type(of: self)) \(#function)()")
+        #endif
         
         var classifier: Classifierdefinitions? = DatastoreController.shared.entityByName("Classifierdefinitions", key: "text", value: text as NSObject) as? Classifierdefinitions
-        if classifier != nil {
+        if classifier != nil && classifier?.language == language {
             return
         }
         
         classifier = DatastoreController.shared.createNewEntityByName("Classifierdefinitions") as? Classifierdefinitions
-        classifier?.text = text
+        classifier?.language      = language
+        classifier?.text          = text
         classifier?.theClassifier = classifierString ?? "other"
         
         _ = DatastoreController.shared.saveToPersistentStore()
@@ -31,17 +32,42 @@ class ClassifierHelper: NSObject {
     
     
     /**
-     We write all the classifier data into two files, one for training and one for testing
+      we look for the existing languages in the classifier table and create one file for each language
      */
     static func createMLFiles() {
-#if DEBUG
-        NSLog("\(type(of: self)) \(#function)()")
-#endif
+        #if DEBUG
+                NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        let allClassifier = DatastoreController.shared.allForEntity("Classifierdefinitions") as? [Classifierdefinitions] ?? []
+        
+        var languages: [String] = []
+        
+        // we first collect all existing languages
+        for classifier in allClassifier {
+            if !languages.contains(classifier.language!) {
+                languages.append(classifier.language!)
+            }
+        }
+        
+        for language in languages {
+            createMLFiles(language: language)
+        }
+    }
+    
+    
+    /**
+     We write all the classifier data into two files, one for training and one for testing
+     */
+    private static func createMLFiles(language: String) {
+        #if DEBUG
+                NSLog("\(type(of: self)) \(#function)()")
+        #endif
         
         let desktopPath = (NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true) as [String]).first
         if desktopPath == nil { return }
-        let classifierTrainingsFilename: String = desktopPath! + "/NewClassifierTrainingdata.json"
-        let classifierTestsFilename:     String = desktopPath! + "/NewClassifierTestdata.json"
+        let classifierTrainingsFilename: String = desktopPath! + "/NewClassifierTrainingdata_" + language + ".json"
+        let classifierTestsFilename:     String = desktopPath! + "/NewClassifierTestdata_" + language + ".json"
         
         let rowCount = DatastoreController.shared.rowCountForEntity(name: "Classifierdefinitions")
         if rowCount == 0 { return } // nothing to do here
@@ -70,6 +96,7 @@ class ClassifierHelper: NSObject {
                     trainingNumberFoundArray.append(randRowNum) // we remember the found row number
                     let classifier: Classifierdefinitions? = DatastoreController.shared.entityByRownum(entityName: "Classifierdefinitions", rownum: randRowNum) as? Classifierdefinitions
                     if classifier == nil { return }
+                    if classifier?.language != language { continue }
                     
                     if !firstRow { // after the first row we separate the parts with a comma
                         trainingHandle.write(",".data(using: .utf8)!)
@@ -90,7 +117,8 @@ class ClassifierHelper: NSObject {
                 for i in 0..<rowCount {
                     if !trainingNumberFoundArray.contains(i) {
                         let classifier: Classifierdefinitions = DatastoreController.shared.entityByRownum(entityName: "Classifierdefinitions", rownum: i) as! Classifierdefinitions
-                        
+                        if classifier.language != language { continue }
+
                         if !firstRow { // after the first row we separate the parts with a comma
                             testHandle.write(",".data(using: .utf8)!)
                         }

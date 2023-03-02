@@ -8,22 +8,13 @@
 import Cocoa
 
 class Translations: NSObject {
-    public static var translationLanguage: String = "en"
+    public static var translationLanguage: String = NSLocale.current.language.languageCode?.identifier ?? "en"
     
     /**
         In init we check if we have translations for the app language. Otherwise we use the default english
      */
     override init() {
         super.init()
-        
-        let appLanguage: String = NSLocale.current.language.languageCode?.identifier ?? "en"
-        if appLanguage != Translations.translationLanguage {
-            let predicate = NSPredicate.init(format: "language = \(appLanguage)")
-            let translationObjects: [NSManagedObject]? = DatastoreController.shared.allForEntity("Translation", with: predicate) as? [NSManagedObject]
-            if translationObjects != nil && translationObjects?.count ?? 0 > 0 {
-                Translations.translationLanguage = appLanguage
-            }
-        }
     }
     
     
