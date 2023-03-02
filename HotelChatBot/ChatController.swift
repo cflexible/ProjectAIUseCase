@@ -172,7 +172,7 @@ class ChatController: NSObject {
         let sentences = text.split(separator: ".")
         var fullResult = ""
         for sentence in sentences {
-            var result: String = analyseSentence(text: String(sentence))
+            let result: String = analyseSentence(text: String(sentence))
             if !fullResult.contains(result) {
                 fullResult = fullResult + result
             }
@@ -546,7 +546,6 @@ class ChatController: NSObject {
                     }
                    break
                 case "to-year-month-day":
-                    print(Int(value))
                     if toYearString.count == 0 && Int(value) == nil {
                         // we have a text here
                     }

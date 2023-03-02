@@ -30,6 +30,7 @@
         <attribute name="country" optional="YES" attributeType="String"/>
         <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="firstname" attributeType="String"/>
+        <attribute name="gend" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="lastname" attributeType="String"/>
         <attribute name="mailaddress" attributeType="String"/>
