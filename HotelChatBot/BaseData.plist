@@ -39,7 +39,7 @@
 				<key>englishText</key>
 				<string>Please give me your firstname and lastname&lt;br&gt;or your eMail address when you have already been a guest at our hotel.</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use the keywords firstname and lastname for better understanding.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -60,7 +60,7 @@
 				<key>englishText</key>
 				<string>Please name me your firstname and your lastname&lt;br&gt;or your mail address if you don&apos;t stay the first time at our hotel, thanks.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use the keywords firstname and lastname or a mail address for better understanding.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -81,7 +81,7 @@
 				<key>englishText</key>
 				<string>Please name me your firstname and your lastname, thanks.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use the keywords firstname and lastname for better understanding.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -102,7 +102,7 @@
 				<key>englishText</key>
 				<string>From when to when would you like to stay?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use the date format yyyy-mm-dd for better understanding.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -123,7 +123,7 @@
 				<key>englishText</key>
 				<string>When will you arrive?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please give me the arrival date in yyyy-mm-dd format.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -144,7 +144,7 @@
 				<key>englishText</key>
 				<string>When will you leave?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please give me the departure date in yyyy-mm-dd format.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -165,7 +165,7 @@
 				<key>englishText</key>
 				<string>How many persons want to stay with you?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use numbers instead of words.</string>
 				<key>checkFunction</key>
 				<string>==</string>
 				<key>checkValue</key>
@@ -186,7 +186,7 @@
 				<key>englishText</key>
 				<string>How many children are with you?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use numbers instead of words with the keyword children.</string>
 				<key>checkFunction</key>
 				<string>numberOfGuests &gt;</string>
 				<key>checkValue</key>
@@ -207,7 +207,7 @@
 				<key>englishText</key>
 				<string>Do you like to have breakfast in the mornings?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>I can understand positive and negative breakfast sentences.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -228,7 +228,7 @@
 				<key>englishText</key>
 				<string>Is this a private or business visit?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>I can understand business or private stays.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -249,7 +249,7 @@
 				<key>englishText</key>
 				<string>How do you like to pay (credit card or cash)?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>I can understand the keywords credit card and cash.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -270,7 +270,7 @@
 				<key>englishText</key>
 				<string>Do you need a parking place?&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>I can understand the keyword parking place.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -291,7 +291,7 @@
 				<key>englishText</key>
 				<string>Please give us your phonenumber where we can reach you if we have questions.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Phone numbers are not a problem.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -312,7 +312,7 @@
 				<key>englishText</key>
 				<string>Please give me your mail address where we can send the confirmation mail.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>A valid mail address is helpfull.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -333,7 +333,7 @@
 				<key>englishText</key>
 				<string>The booking is complete. Please verify your values and confirm them with yes, otherwise no.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use yes or no.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
@@ -354,7 +354,7 @@
 				<key>englishText</key>
 				<string>Thank you for your booking. We send you a confirmation mail. Good bye.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>You can close the window.</string>
 				<key>checkFunction</key>
 				<string>==</string>
 				<key>checkValue</key>
@@ -375,7 +375,7 @@
 				<key>englishText</key>
 				<string>We are sorry but we did not understand you.&lt;br&gt;</string>
 				<key>helpText</key>
-				<string>No help available at the moment.</string>
+				<string>Please use the help hints to get more informations.</string>
 				<key>checkFunction</key>
 				<string></string>
 				<key>checkValue</key>
