@@ -736,8 +736,7 @@ class ChatController: NSObject {
                 }
             }
         }
-        return "I'm sorry but I did not understand you."
-
+        return Translations().getTranslation(text: workflows.last?.englishText ?? "We are sorry but we did not understand you.<br>")
     }
     
 }
