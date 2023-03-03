@@ -19,9 +19,9 @@ class ChatController: NSObject {
     static var actStep: Int = -1
     static var taggingSentences:           [String] = []
     
-    static var workBooking:   Booking?
+    static var workBooking:   Booking = Booking.createBooking() // Here we initialize a booking object including a guest object
     static var wantsBooking:  Bool?
-    static var askedQuestion: Int = 0
+    static var askedQuestion: Int = -10
     
     // If the current language is changed we load the language model
     static var currentLanguage: String = "en" {
@@ -44,7 +44,7 @@ class ChatController: NSObject {
     //MARK: Initialisation functions
 
     /**
-        We load language specific models if possible. Otherwise we look for an english version or a version without a language
+        Load of language specific models if possible. Otherwise look for an english version or a version without a language
      */
     static private func initModels() {
         #if DEBUG
@@ -54,67 +54,53 @@ class ChatController: NSObject {
         if classifierModel != nil && taggerModel != nil {
             return
         }
-        if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier_" + currentLanguage + " " + classifierVersion, withExtension: "mlmodelc") {
-            do {
-                classifierModel = try NLModel(contentsOf: classifierModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        
+        // we try to load a classifier model for the actual language if that is not possible we use en or nothing
+        var modelFilename = "HotelChatbotTextClassifier" + "_" + currentLanguage + " " + classifierVersion
+        var classifierModelURL = Bundle.main.url(forResource: modelFilename, withExtension: "mlmodelc")
+        if classifierModelURL == nil {
+            modelFilename = "HotelChatbotTextClassifier" + "_en " + classifierVersion
+            classifierModelURL = Bundle.main.url(forResource: modelFilename, withExtension: "mlmodelc")
         }
-        else if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier_en " + classifierVersion, withExtension: "mlmodelc") {
-            do {
-                classifierModel = try NLModel(contentsOf: classifierModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        if classifierModelURL == nil {
+            classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier " + classifierVersion, withExtension: "mlmodelc")
         }
-        else if let classifierModelURL = Bundle.main.url(forResource: "HotelChatbotTextClassifier " + classifierVersion, withExtension: "mlmodelc") {
-            do {
-                classifierModel = try NLModel(contentsOf: classifierModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        if classifierModelURL == nil {
+            return
+        }
+        do {
+            classifierModel = try NLModel(contentsOf: classifierModelURL!)
+        }
+        catch  {
+            print("error trying to load classifier model")
+            return
         }
 
-        
-        if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger_" + currentLanguage + " " + taggerVersion, withExtension: "mlmodelc") {
-            do {
-                taggerModel = try NLModel(contentsOf: taggerModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        // we try to load a tagger model for the actual language if that is not possible we use en or nothing
+        modelFilename = "HotelChatBotTagger" + "_" + currentLanguage + " " + classifierVersion
+        var taggerModelURL = Bundle.main.url(forResource: modelFilename, withExtension: "mlmodelc")
+        if taggerModelURL == nil {
+            modelFilename = "HotelChatBotTagger" + "_en " + classifierVersion
+            taggerModelURL = Bundle.main.url(forResource: modelFilename, withExtension: "mlmodelc")
         }
-        else if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger_en " + taggerVersion, withExtension: "mlmodelc") {
-            do {
-                taggerModel = try NLModel(contentsOf: taggerModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        if taggerModelURL == nil {
+            taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger " + classifierVersion, withExtension: "mlmodelc")
         }
-        else if let taggerModelURL = Bundle.main.url(forResource: "HotelChatBotTagger " + taggerVersion, withExtension: "mlmodelc") {
-            do {
-                taggerModel = try NLModel(contentsOf: taggerModelURL)
-            }
-            catch  {
-                print("error trying to load classifier model")
-                return
-            }
+        if taggerModelURL == nil {
+            return
+        }
+        do {
+            taggerModel = try NLModel(contentsOf: taggerModelURL!)
+        }
+        catch  {
+            print("error trying to load tagger model")
+            return
         }
     }
 
 
     /**
-        we look for the current text language
+        Look for the current text language
      */
     static func currentTextLanguage(text: String) -> String {
         #if DEBUG
@@ -131,25 +117,6 @@ class ChatController: NSObject {
     
     
     //MARK: Workflow functions
-
-    static func nextStep() -> String {
-        #if DEBUG
-            NSLog("\(type(of: self)) \(#function)()")
-        #endif
-
-        let nextworkflowObject: Workflow? = DatastoreController.shared.entityByName("Workflow", key: "questionNumber", value: NSNumber.init(value: actStep) as NSObject) as? Workflow
-        
-        if nextworkflowObject != nil {
-            actStep += 1
-            if actStep <= 0 {
-                return Translations().getTranslation(text: (nextworkflowObject?.englishText) ?? "") + nextStep()
-            }
-            return Translations().getTranslation(text: (nextworkflowObject?.englishText) ?? "")
-        }
-        return ""
-    }
-    
-    
     /**
         Main function for analysing a text. Here we just splitt the text into sentences and analyse them separately
      */
@@ -158,17 +125,15 @@ class ChatController: NSObject {
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
+        // if there is no language set (which is improbable) the langauge is set from the text
         if currentLanguage.count == 0 {
             currentLanguage = currentTextLanguage(text: text)
         }
 
+        // Initialize the models
         initModels()
-        
-        struct ValueHypotheseses {
-            var text: String
-            var hypotheses: Double
-        }
-        
+
+        // Split the text into sentences (this is actually simple but a fast way)
         let sentences = text.split(separator: ".")
         var fullResult = ""
         for sentence in sentences {
@@ -177,160 +142,172 @@ class ChatController: NSObject {
                 fullResult = fullResult + result
             }
         }
+        // Return the result with the next question
         fullResult = fullResult + getNextQuestion()
         return fullResult
         
     }
     
     
+    /**
+        This is the main function of analysing the texts. Here we get one sentence. So we can first analyse the kind
+        of the sentence before we analyse the content of the sentence.
+     */
     static private func analyseSentence(text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-        if currentLanguage.count == 0 {
-            currentLanguage = currentTextLanguage(text: text)
-        }
-
-        initModels()
-        
-        var guest: Guest? = workBooking?.guest
-        
-        struct ValueHypotheseses {
-            var text: String
-            var hypotheses: Double
-        }
-        
-        if classifierModel != nil && taggerModel != nil {
-            var classifierLabel = classifierModel!.predictedLabel(for: text)
-            // We remember the text
-            ClassifierHelper.addText(language: currentLanguage, text: text, classifierString: classifierLabel)
-            print("Found classifier: \(classifierLabel ?? "")")
-            if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
-                classifierLabel = "hasDates"
-            }
-            switch classifierLabel {
-                
-            case "hasNames":
-                if workBooking?.guest?.firstname?.count ?? 0 > 0 && workBooking?.guest?.lastname?.count ?? 0 > 0 {
-                    return "We are sorry but I did not understand you.<br>"
-                }
-                let firstName: String = valueForNames(tagname: "first-name", text: text)
-                let lastName:  String = valueForNames(tagname: "last-name", text: text)
-                
-                if firstName.count > 0 && lastName.count > 0 {
-                    guest = DatastoreController.shared.createNewEntityByName("Guest") as? Guest
-                    guest?.firstname = firstName
-                    guest?.lastname  = lastName
-                    addValueToBooking(data: guest!)
-                    return "Hello <strong>" + firstName + "</strong> <strong>" + lastName + "</strong>. Welcome to our hotel. <br>"
-                }
-                return "We are sorry but I did not understand you.<br>"
-                
-            case "hasMailaddress":
-                let mail: String = Utilities.getMailAddressFromText(text) ?? ""
-                
-                if guest != nil && guest?.firstname?.count ?? 0 > 0 && guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
-                    guest?.mailaddress = mail
-                }
-                else if mail.count > 0 {
-                    let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
-                    if guestDB != nil {
-                        addValueToBooking(data: guestDB!)
-                    }
-                }
-                else {
-                    return String("I'm sorry but I could not understand you.<br>")
-                }
-                if workBooking?.guest != nil {
-                    let firstName: String = workBooking?.guest?.firstname ?? ""
-                    let lastName:  String = workBooking?.guest?.lastname  ?? ""
-                    return "Hallo " + "<strong>" + firstName + "</strong>" + " " + "<strong>" + lastName + "</strong>" + ". Welcome to our hotel. <br>"
-                }
-                else {
-                    return "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>"
-                }
-
-            case "numberOfGuests":
-                let numberOfGuests = valueForNumbers(tagname: "number", text: text)
-                if workBooking?.startDate != nil && workBooking?.endDate != nil && numberOfGuests > 0 {
-                    let bookedRoomCount: Int = workBooking?.bookRooms(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!, countPersons: numberOfGuests) ?? 0
-                    if bookedRoomCount > 0 {
-                        return "We have booked \(String(bookedRoomCount)) rooms for you.<br>"
-                    }
-                    else {
-                        return "We are sorry but we have not enough free rooms available.<br>"
-                    }
-                }
-                return "We are sorry but we could not understand how many you are. Please try it again.<br>"
-                
-            case "hasDates":
-                let dates: [Date]? = valueForDates(text: text, language: currentLanguage)
-                if workBooking != nil && dates?.count == 2 && dates?[0].compare((dates?[1])!) == .orderedAscending {
-                    workBooking?.startDate = dates![0]
-                    workBooking?.endDate   = dates![1]
-                    return "Thank you for the dates.<br>"
-                }
-                return "We are sorry but we could not recognize the dates. We prefere a format in yyyy-mm-dd.<br>"
-                
-            case "positive-hasChildren":
-                workBooking?.numberOfChildren = 1
-                return "We have noticed a child.<br>"
-            case "negative-hasChildren":
-                workBooking?.numberOfChildren = 0
-                return "We have noticed no children.<br>"
-                
-            case "privateVisit":
-                workBooking?.guestType = "Private"
-                return "We have noticed your visit as a private visit.<br>"
-            case "businessVisit":
-                workBooking?.guestType = "Business"
-                return "We have noticed your visit as a business visit.<br>"
-                
-            case "hasPhonenumber":
-                let phoneNumberString: String = valueForPhone(text: text)
-                workBooking?.guest?.phonenumber = phoneNumberString
-                return "Thank you for your phonenumber.<br>"
-                
-            case "positive-breakfast":
-                workBooking?.breakfast = true
-                return "Breakfast is noticed.<br>"
-            case "negative-breakfast":
-                workBooking?.breakfast = false
-                return "It is noticed that you do not want to have breakfast.<br>"
-                
-            case "positive-parking":
-                if workBooking?.startDate != nil && workBooking?.endDate != nil {
-                    if workBooking?.bookParking(fromDate: (workBooking?.startDate)!, toDate: (workBooking?.endDate)!) ?? false {
-                        return "Parking is noticed.<br>" + getNextQuestion()
-                    }
-                    else {
-                        return "We are sorry but we do not have a free parking place for you.<br>"
-                    }
-                }
-                return "Before we can book a parking place we need your arrival and departure dates.<br>"
-            case "negative-parking":
-                return "It is noticed that you do not need a parking place.<br>"
-            
-            case "number-answer":
-                return "Thank you<br>"
-                
-            case "room-price":
-                return Booking.roomPrices() + "<br>"
-            case "free-room":
-                if workBooking?.startDate != nil && workBooking?.endDate != nil && workBooking?.numberOfGuests != nil {
-                    return Booking.freeRooms(fromDate: workBooking!.startDate!, toDate: workBooking!.endDate!, countPersons: Int(workBooking!.numberOfGuests)) + "<br>" + getNextQuestion()
-                }
-                return "Please give us your visit dates and how many you are.<br>"
-            default:
-                break
-            }
-        }
-        else {
+        // If we miss a model we return
+        if classifierModel == nil || taggerModel == nil {
             return String("I'm sorry but I miss a NLP model, please ask the developer.")
         }
+
+        let baseErrormessage = Translations().getTranslation(text: "We are sorry but I did not understand you.<br>")
         
-        return String("I'm sorry but I could not understand you.<br>")
+        var classifierLabel = classifierModel!.predictedLabel(for: text)
+        // We remember the text
+        ClassifierHelper.addText(language: currentLanguage, text: text, classifierString: classifierLabel)
+        print("Found classifier: \(classifierLabel ?? "")")
+        if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
+            classifierLabel = "hasDates"
+        }
+        
+        switch classifierLabel {
+        case "hasNames":
+            if workBooking.guest?.firstname?.count ?? 0 > 0 && workBooking.guest?.lastname?.count ?? 0 > 0 {
+                return baseErrormessage + Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            }
+            let firstName: String = valueForNames(tagname: "first-name", text: text)
+            let lastName:  String = valueForNames(tagname: "last-name", text: text)
+            
+            if firstName.count > 0 && lastName.count > 0 {
+                workBooking.guest?.firstname = firstName
+                workBooking.guest?.lastname  = lastName
+                var positiveReturn = Translations().getTranslation(text: workflows[askedQuestion + 1].positiveAnswer ?? "")
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<firstName>", with: firstName)
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<lastName>", with: lastName)
+                return positiveReturn
+            }
+            print(askedQuestion)
+            return baseErrormessage + Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            
+        case "hasMailaddress":
+            let mail: String = Utilities.getMailAddressFromText(text) ?? ""
+            
+            if workBooking.guest != nil && workBooking.guest?.firstname?.count ?? 0 > 0 && workBooking.guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
+                workBooking.guest?.mailaddress = mail
+            }
+            else if mail.count > 0 {
+                let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
+                if guestDB != nil {
+                    workBooking.guest = guestDB!
+                }
+            }
+            else {
+                return baseErrormessage
+            }
+            if workBooking.guest != nil {
+                let firstName: String = workBooking.guest?.firstname ?? ""
+                let lastName:  String = workBooking.guest?.lastname  ?? ""
+                var positiveReturn = Translations().getTranslation(text: workflows[askedQuestion + 1].positiveAnswer ?? "")
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<firstName>", with: firstName)
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<lastName>", with: lastName)
+                return positiveReturn
+            }
+            else {
+                return Translations().getTranslation(text: "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>")
+            }
+
+        case "numberOfGuests":
+            let numberOfGuests = valueForNumbers(tagname: "number", text: text)
+            if workBooking.startDate != nil && workBooking.endDate != nil && numberOfGuests > 0 {
+                let bookedRoomCount: Int = workBooking.bookRooms(fromDate: (workBooking.startDate)!, toDate: (workBooking.endDate)!, countPersons: numberOfGuests)
+                if bookedRoomCount > 0 {
+                    var bookedRoomResult = Translations().getTranslation(text: "We have booked <bookedRoomCount> rooms for you.<br>")
+                    bookedRoomResult = bookedRoomResult.replacingOccurrences(of: "bookedRoomCount", with: String(bookedRoomCount))
+                    return bookedRoomResult
+                }
+                else {
+                    return Translations().getTranslation(text: "We are sorry but we have not enough free rooms available.<br>")
+                }
+            }
+            return Translations().getTranslation(text: "We are sorry but we could not understand how many you are. Please try it again.<br>")
+            
+        case "hasDates":
+            let dates: [Date]? = valueForDates(text: text, language: currentLanguage)
+            if dates?.count == 2 && dates?[0].compare((dates?[1])!) == .orderedAscending {
+                workBooking.startDate = dates![0]
+                workBooking.endDate   = dates![1]
+                return Translations().getTranslation(text: "Thank you for the dates.<br>")
+            }
+            return baseErrormessage + Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            
+        case "positive-hasChildren":
+            workBooking.numberOfChildren = 1
+            return Translations().getTranslation(text: workflows[askedQuestion].positiveAnswer ?? "")
+        case "negative-hasChildren":
+            workBooking.numberOfChildren = 0
+            return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            
+        case "privateVisit":
+            workBooking.guestType = "Private"
+            return Translations().getTranslation(text: "We have noticed your visit as a private visit.<br>")
+        case "businessVisit":
+            workBooking.guestType = "Business"
+            return Translations().getTranslation(text: "We have noticed your visit as a business visit.<br>")
+            
+        case "hasPhonenumber":
+            let phoneNumberString: String = valueForPhone(text: text)
+            workBooking.guest?.phonenumber = phoneNumberString
+            return Translations().getTranslation(text: "Thank you for your phonenumber.<br>")
+            
+        case "positive-breakfast":
+            workBooking.breakfast = true
+            return Translations().getTranslation(text: "Breakfast is noticed.<br>")
+        case "negative-breakfast":
+            workBooking.breakfast = false
+            return Translations().getTranslation(text: "It is noticed that you do not want to have breakfast.<br>")
+            
+        case "positive-parking":
+            if workBooking.startDate != nil && workBooking.endDate != nil {
+                if workBooking.bookParking(fromDate: (workBooking.startDate)!, toDate: (workBooking.endDate)!) {
+                    return Translations().getTranslation(text: "Parking is noticed.<br>")
+                }
+                else {
+                    return Translations().getTranslation(text: "We are sorry but we do not have a free parking place for you.<br>")
+                }
+            }
+            return Translations().getTranslation(text: "Before we can book a parking place we need your arrival and departure dates.<br>")
+        case "negative-parking":
+            return Translations().getTranslation(text: "It is noticed that you do not need a parking place.<br>")
+        
+        case "number-answer":
+            return Translations().getTranslation(text: "Thank you for the number<br>")
+            
+            // we expect a yes or something like that
+        case "simple-positiv":
+            if workBooking.finishBooking() {
+                return "" // If the booking is finished we just return for the next question
+            }
+            return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            
+            // we expect a no or something like that
+        case "simple-negativ":
+            return Translations().getTranslation(text: "Thank you. We have noticed that you do not want to book.<br>You can close the window.<br>")
+            
+        case "room-price":
+            return Booking.roomPrices() + "<br>"
+        case "free-room":
+            if workBooking.startDate != nil && workBooking.endDate != nil && workBooking.numberOfGuests == 0 {
+                return Booking.freeRooms(fromDate: workBooking.startDate!, toDate: workBooking.endDate!, countPersons: Int(workBooking.numberOfGuests)) + "<br>" //+ getNextQuestion()
+            }
+            return Translations().getTranslation(text: "Please give us your visit dates and how many you are.<br>")
+        default:
+            break
+        }
+        
+        return baseErrormessage
     }
     
     
@@ -697,7 +674,7 @@ class ChatController: NSObject {
         return resultPhoneNumber
     }
 
-
+/*
     static func addValueToBooking(data: NSObject) {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -707,36 +684,138 @@ class ChatController: NSObject {
             if workBooking == nil {
                 workBooking = DatastoreController.shared.createNewEntityByName("Booking") as? Booking
             }
-            workBooking?.guest = (data as! Guest)
+            workBooking.guest = (data as! Guest)
 
         }
     }
-    
+    */
     
     static func getNextQuestion() -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-        // let test = workBooking?.bookingComplete()
-
-        for workflow in workflows {
-            if workflow.questionNumber < actStep {
+        // Loop through the workflow entries as defined in BaseData.plist
+        for i in 0..<workflows.count {
+            var workflow = workflows[i]
+            if workflow.questionNumber < askedQuestion {
                 continue
             }
-            if workflow.checkAttributename == "workBooking" && workBooking == nil {
-                return workflow.englishText ?? "Undefined Text"
+            
+            if askedQuestion < -1 {
+                var text = Translations().getTranslation(text: workflow.englishText ?? "Undefined Text")
+                workflow = workflows[i+1]
+                text = text + Translations().getTranslation(text: (workflow.englishText ?? "Undefined Text"))
+                askedQuestion = Int(workflow.questionNumber)
+                return text
             }
+             
             else {
-                let validateValue = workBooking?.value(forKeyPath: workflow.checkAttributename ?? "")
-                if validateValue == nil {
-                    askedQuestion = Int(workflow.questionNumber)
-                    return workflow.englishText ?? "Undefined Text"
+                if workflow.checkAttributename?.count ?? 0 > 0 {
+                    // Get the value from the workBooking object which is asked by the workflow question
+                    /*
+                    let validateValue = workBooking.value(forKeyPath: workflow.checkAttributename ?? "")
+                    if workflow.checkFunction == "==" && workflow.checkValue != nil {
+                        if String(describing: validateValue) == workflow.checkValue {
+                            askedQuestion = Int(workflow.questionNumber)
+                        }
+                    }
+                     */
+                    // If the booking value is empty it is asked for
+                    if !isValueCorrectFilled(booking: workBooking, workflow: workflow) {
+                        askedQuestion = Int(workflow.questionNumber)
+                        var newQuestion = Translations().getTranslation(text: workflow.englishText ?? "Undefined Text")
+                        newQuestion = newQuestion.replacingOccurrences(of: "<Booking>", with: workBooking.toHTML())
+                        return newQuestion
+                    }
                 }
             }
         }
+        
         return Translations().getTranslation(text: workflows.last?.englishText ?? "We are sorry but we did not understand you.<br>")
     }
     
+    
+    static private func isValueCorrectFilled(booking: Booking, workflow: Workflow) -> Bool {
+        var value = workBooking.value(forKeyPath: workflow.checkAttributename ?? "")
+        
+        if value == nil {
+            return false
+        }
+        
+        if value != nil && (workflow.checkFunction == nil || workflow.checkValue == nil || workflow.checkFunction?.count == 0 || workflow.checkValue?.count == 0) {
+            return true // There is nothing to check
+        }
+        
+        var compareFunction = workflow.checkFunction ?? ""
+        var referenceAttributeName  = ""
+        if compareFunction.contains(" ") &&  !compareFunction.contains("contains") {
+            compareFunction = workflow.checkFunction?.after(first: " ") ?? ""
+            referenceAttributeName = workflow.checkFunction?.before(first: " ") ?? ""
+            if referenceAttributeName.count > 0 {
+                if workBooking.value(forKeyPath: referenceAttributeName) is Int {
+                    value = String(workBooking.value(forKeyPath: referenceAttributeName) as! Int)
+                }
+                else if workBooking.value(forKeyPath: referenceAttributeName) is String {
+                    value = workBooking.value(forKeyPath: referenceAttributeName) as! String
+                }
+                else if workBooking.value(forKeyPath: referenceAttributeName) is Bool {
+                    value = String(workBooking.value(forKeyPath: referenceAttributeName) as! Bool)
+                }
+            }
+        }
+        
+        if value is Int {
+            value = String(value as! Int)
+        }
+        else if value is Bool {
+            value = String(value as! Bool)
+        }
+        
+        let compareValue: String    = workflow.checkValue ?? ""
+        
+        switch compareFunction {
+        case "":
+            return false // the standard case
+        case "<":
+            if Int(value as! String) ?? 0 < Int(compareValue) ?? 0 {
+                return true
+            }
+        case ">":
+            if Int(value as! String) ?? 0 > Int(compareValue) ?? 0 {
+                return true
+            }
+        case "=":
+            if value as! String == compareValue {
+                return true
+            }
+        case "!=":
+            if value as! String != compareValue {
+                return true
+            }
+        case "<=":
+            if Int(value as! String) ?? 0 <= Int(compareValue) ?? 0 {
+                return true
+            }
+        case ">=":
+            if Int(value as! String) ?? 0 >= Int(compareValue) ?? 0 {
+                return true
+            }
+        case "contains":
+            let list: [String] = compareValue.components(separatedBy: ", ")
+            if list.contains(value as! String) {
+                return true
+            }
+        case "not contains":
+            let list: [String] = compareValue.components(separatedBy: ", ")
+            if !list.contains(value as! String) {
+                return true
+            }
+        default:
+            print("Unknown function: \(compareFunction)")
+            return true
+        }
+        return false
+    }
 }
 

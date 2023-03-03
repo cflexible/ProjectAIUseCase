@@ -385,7 +385,7 @@ class Utilities: NSObject {
 
         var localeIdentifier: String = "en_GB"
         var dateString: String = ""
-        var year = year ?? actualYear()
+        let year = year ?? actualYear()
         var foundDate: Date?
         let dateFormats: [String] = ["yy-MM-dd", "yyyy-MM-dd", "yyyy-MMM-dd", "yyyy-MMMM-dd"]
         

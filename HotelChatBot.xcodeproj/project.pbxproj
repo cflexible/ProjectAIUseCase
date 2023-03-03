@@ -14,6 +14,7 @@
 		0A3D13BC29A8B2A0000F7DFF /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */; };
 		0A3D13BF29A90815000F7DFF /* HotelChatBotTagger 1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BD29A90815000F7DFF /* HotelChatBotTagger 1.mlmodel */; };
 		0A3D13C029A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BE29A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel */; };
+		0A3E2BD629B22B960045250F /* BookingHtmlStyle.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0AFCBF2729ACF71A0056F007 /* BookingHtmlStyle.txt */; };
 		0A4BD2ED29A78BF200BB2D01 /* OutputViewGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4BD2EC29A78BF200BB2D01 /* OutputViewGenerator.swift */; };
 		0A4BD2F029A7936F00BB2D01 /* preBody.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0A4BD2EE29A78C9400BB2D01 /* preBody.txt */; };
 		0A4BD2F129A7936F00BB2D01 /* postBody.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0A4BD2EF29A78CF600BB2D01 /* postBody.txt */; };
@@ -208,6 +209,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A3E2BD629B22B960045250F /* BookingHtmlStyle.txt in Resources */,
 				0A4BD2F029A7936F00BB2D01 /* preBody.txt in Resources */,
 				0A4BD2F129A7936F00BB2D01 /* postBody.txt in Resources */,
 				0A7939C129A4B2F300F7D000 /* Assets.xcassets in Resources */,

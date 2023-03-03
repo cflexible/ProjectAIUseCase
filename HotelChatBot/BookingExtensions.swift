@@ -15,6 +15,42 @@ import CoreData
 public extension Booking {
     
     /**
+        If we create a booking object we also create a guest object becaise we need it and we have now a central position of creating the objects.
+     */
+    static func createBooking() -> Booking {
+        let booking: Booking = (DatastoreController.shared.createNewEntityByName("Booking") as? Booking)!
+        booking.guest = DatastoreController.shared.createNewEntityByName("Guest") as? Guest
+        booking.state = "created"
+        
+        // Finish simulation
+        /*
+        booking.guest?.firstname = "Max"
+        booking.guest?.lastname  = "Mustermann"
+        booking.guest?.phonenumber = "0123456789"
+        booking.guest?.mailaddress = "max@mustermann.de"
+        booking.startDate = Date()
+        booking.endDate   = Date()
+        booking.breakfast = true
+        booking.paymentMethod = "credit card"
+        booking.numberOfGuests = 2
+        booking.numberOfChildren = 0
+        booking.addToRooms(DatastoreController.shared.entityByRownum(entityName: "Room", rownum: 0) as! Room)
+        booking.addToParkings(DatastoreController.shared.entityByRownum(entityName: "Parkingplace", rownum: 0) as! Parkingplace)
+         */
+        return booking
+    }
+    
+    
+    func finishBooking() -> Bool {
+        if bookingComplete() {
+            self.state = "booked"
+            return DatastoreController.shared.saveToPersistentStore()
+        }
+        return false
+    }
+    
+    
+    /**
         we try to book empty rooms and if this is successful we return true
      */
     func bookRooms(fromDate: Date, toDate: Date, countPersons: Int) -> Int {
@@ -148,6 +184,10 @@ public extension Booking {
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
+        if !bookingComplete() {
+            return ""
+        }
+        
         var boolString = ""
         var bookingStyle = ""
         
@@ -162,7 +202,6 @@ public extension Booking {
         }
 
         var html: String = "<style>" + bookingStyle + "</style>"
-        html = html + "<div>"
         html = html + "<div class=\"divTable blueTable\">"
         html = html + "<div class=\"divTableHeading\">"
         html = html + "<div class=\"divTableRow\">"
@@ -237,8 +276,6 @@ public extension Booking {
         html = html + "</div>"
         html = html + "</div>"
         html = html + "</div>"
-        html = html + "</div>"
-        html = html + "</div>"
         return html
     }
 }
@@ -275,7 +312,7 @@ public extension NSManagedObject {
                 return false
             }
             else {
-                return (self.entity.value(forKey: key) as! NSManagedObject).bookingComplete()
+                return (self.value(forKey: key) as! NSManagedObject).bookingComplete()
             }
         }
 
@@ -291,7 +328,7 @@ public extension NSManagedObject {
             // we can spare the test of all subobjects. It is enough to know that they exist.
         }
 
-        return false
+        return true
     }
 
 

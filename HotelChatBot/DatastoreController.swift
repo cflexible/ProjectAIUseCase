@@ -72,8 +72,10 @@ class DatastoreController: NSObject {
             switch part {
             case 0:
                 print("Error while adding PersistenceStore: ".appending((storeUrl?.absoluteString)!).appending("\n, ").appending(options.description))
+                break
             case 1:
                 print("Error while stting File attributes: ".appending(fileAttributes.description).appending("\n, ").appending((storeUrl?.absoluteString)!))
+                break
             default:
                 print("unbekannter Punkt")
             }

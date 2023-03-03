@@ -33,14 +33,14 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         self.view.window?.delegate = self
         editField.delegate = self
         ChatController.currentLanguage = Utilities.getLanguage().lowercased()
-        let html: String = outviewGenerator.newHotelChat(text: ChatController.nextStep())
+        let html: String = outviewGenerator.newHotelChat(text: ChatController.getNextQuestion())
         webView.navigationDelegate = self
         webView.loadHTMLString(html, baseURL: nil)
     }
 
     
     /**
-        The view will be visible in the next step so we should make view changes like the set of the window title first.
+        The view will be visible in the next step so it should make view changes like the set of the window title first.
      */
     override func viewWillAppear() {
         #if DEBUG
@@ -75,7 +75,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     
     
     /**
-        Event when the user changed the text in the editing field. we then calculate a new high with the next function til a maximum so the user should not have to scroll
+        Event when the user changed the text in the editing field. A new high is calculated with the next function til a maximum so the user should not have to scroll
      */
     func controlTextDidChange(_ obj: Notification) {
         #if DEBUG
@@ -87,7 +87,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     
     
     /**
-        The user presses return and we take that event for using his editing
+        The user presses return and take that event for using his editing
      */
     func controlTextDidEndEditing(_ obj: Notification) {
         #if DEBUG
@@ -112,7 +112,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         let text = editField.stringValue
         editField.stringValue = ""
         botWorking.isHidden = false
-        var newHotelChatString: String? = ChatController.analyseText(text: text)
+        let newHotelChatString: String? = ChatController.analyseText(text: text)
         if newHotelChatString != nil {
             let html: String = outviewGenerator.newHotelChat(text: newHotelChatString!)
             webView.navigationDelegate = self
@@ -127,8 +127,8 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     
     
     /**
-        we calculate the height of the text and we grow the height of the text field until it reaches a maximum height of 128
-        also we recalculate the height of the webview and set that
+        Ccalculate the height of the text to grow the height of the text field until it reaches a maximum height of 128
+        also recalculate the height of the webview and set that
      */
     func calculateEditHeight() {
         #if DEBUG
@@ -148,7 +148,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     
     
     /**
-        If the info button is pressed we show a little window with an informational text to the user.
+        If the info button is pressed show a little window with an informational text to the user.
      */
     @IBAction func infoPressed(_ sender: NSButton) {
         #if DEBUG
@@ -161,7 +161,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     
     
     /**
-        If the webview is loaded we scroll to the end because we reload the page with every new chat entry
+        If the webview is loaded scroll to the end because the page is reloaded with every new chat entry
      */
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         #if DEBUG
@@ -169,10 +169,13 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         #endif
         
         webView.scrollPageDown(self)
+        // Scrolling til end of page
         webView.evaluateJavaScript("var scrollingElement = (document.scrollingElement || document.body); scrollingElement.scrollTop = scrollingElement.scrollHeight;")
+        // prevent mouse actions
+        webView.evaluateJavaScript("window.addEventListener('contextmenu', (event) => event.preventDefault());")
     }
 
-    
+
     /**
         If the user pressed the close button the whole program terminates
      */

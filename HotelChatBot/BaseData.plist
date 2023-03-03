@@ -29,15 +29,15 @@
 			<key>attributes</key>
 			<dict>
 				<key>negativeAnswer</key>
-				<string>I&apos;m sorry, but I did not understand you. Please use the words firstname and lastname.</string>
+				<string>I&apos;m sorry, but I did not understand you. Please use the words firstname and lastname.&lt;br&gt;</string>
 				<key>positiveAnswer</key>
-				<string>Thanks for names</string>
+				<string>&quot;Hello &lt;strong&gt;&lt;firstName&gt;&lt;/strong&gt; &lt;strong&gt;&lt;lastName&gt;&lt;/strong&gt;. Welcome to our hotel. &lt;br&gt;&quot;</string>
 				<key>checkAttributename</key>
 				<string>guest.firstname</string>
 				<key>questionNumber</key>
 				<integer>0</integer>
 				<key>englishText</key>
-				<string>Please give me your firstname and lastname&lt;br&gt;or your eMail address when you have already been a guest at our hotel.</string>
+				<string>Please give me your firstname and lastname&lt;br&gt;or your email address when you have already been a guest at our hotel.</string>
 				<key>helpText</key>
 				<string>Please use the keywords firstname and lastname for better understanding.</string>
 				<key>checkFunction</key>
@@ -50,9 +50,9 @@
 			<key>attributes</key>
 			<dict>
 				<key>negativeAnswer</key>
-				<string></string>
+				<string>I&apos;m sorry, but I did not understand you. Please use the words firstname and lastname.&lt;br&gt;</string>
 				<key>positiveAnswer</key>
-				<string></string>
+				<string>Thanks for given me your names&lt;br&gt;</string>
 				<key>checkAttributename</key>
 				<string>guest</string>
 				<key>questionNumber</key>
@@ -94,7 +94,7 @@
 				<key>negativeAnswer</key>
 				<string></string>
 				<key>positiveAnswer</key>
-				<string></string>
+				<string>Thank you for the dates.&lt;br&gt;</string>
 				<key>checkAttributename</key>
 				<string>startDate</string>
 				<key>questionNumber</key>
@@ -167,7 +167,7 @@
 				<key>helpText</key>
 				<string>Please use numbers instead of words.</string>
 				<key>checkFunction</key>
-				<string>==</string>
+				<string>&gt;</string>
 				<key>checkValue</key>
 				<string>0</string>
 			</dict>
@@ -178,7 +178,7 @@
 				<key>negativeAnswer</key>
 				<string></string>
 				<key>positiveAnswer</key>
-				<string></string>
+				<string>We have noticed without children.&lt;br&gt;</string>
 				<key>checkAttributename</key>
 				<string>numberOfChildren</string>
 				<key>questionNumber</key>
@@ -188,9 +188,9 @@
 				<key>helpText</key>
 				<string>Please use numbers instead of words with the keyword children.</string>
 				<key>checkFunction</key>
-				<string>numberOfGuests &gt;</string>
+				<string></string>
 				<key>checkValue</key>
-				<string>2</string>
+				<string></string>
 			</dict>
 		</dict>
 		<dict>
@@ -304,7 +304,7 @@
 				<key>negativeAnswer</key>
 				<string></string>
 				<key>positiveAnswer</key>
-				<string></string>
+				<string>I&apos;m sorry but I could not find you in our System. Please give us your names. Thanks.&lt;br&gt;</string>
 				<key>checkAttributename</key>
 				<string>guest.mailaddress</string>
 				<key>questionNumber</key>
@@ -331,13 +331,13 @@
 				<key>questionNumber</key>
 				<integer>14</integer>
 				<key>englishText</key>
-				<string>The booking is complete. Please verify your values and confirm them with yes, otherwise no.&lt;br&gt;</string>
+				<string>The booking is complete.&lt;br&gt;Please verify your values and confirm them with yes, otherwise no.&lt;br&gt;&lt;Booking&gt;&lt;br&gt;</string>
 				<key>helpText</key>
 				<string>Please use yes or no.</string>
 				<key>checkFunction</key>
-				<string></string>
+				<string>contains</string>
 				<key>checkValue</key>
-				<string></string>
+				<string>completed, booked</string>
 			</dict>
 		</dict>
 		<dict>
@@ -356,7 +356,7 @@
 				<key>helpText</key>
 				<string>You can close the window.</string>
 				<key>checkFunction</key>
-				<string>==</string>
+				<string>!=</string>
 				<key>checkValue</key>
 				<string>booked</string>
 			</dict>
@@ -369,7 +369,7 @@
 				<key>positiveAnswer</key>
 				<string></string>
 				<key>checkAttributename</key>
-				<string>workBooking</string>
+				<string></string>
 				<key>questionNumber</key>
 				<integer>16</integer>
 				<key>englishText</key>
