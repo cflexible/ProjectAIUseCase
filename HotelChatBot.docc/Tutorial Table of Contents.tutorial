@@ -1,0 +1,23 @@
+@Tutorials(name: "There is a developer tutorial") {
+    @Intro(title: "Introduction to the tutorials") {
+        There is just one tutorial to adjust the app to your own needs.
+    }
+    
+    @Chapter(name: "How to adjust the app") {
+        @Image(source: "XCodeSymbol.png", alt: "For the developer to adjust the app for yout own needs")
+ 
+        There are some possibilities to adjust the app to your own needs.
+        The most important part there is the training of ML models for analysing texts.
+        
+        @TutorialReference(tutorial: "doc:HowToAdjust")
+    }
+    
+    @Chapter(name: "Train the app") {
+        @Image(source: "CircleOfLife.png", alt: "After the chatbot is ready to use")
+ 
+        After the chatbot is ready to use it would be suitable to test the models and to retrain them.
+        Therfore the user input is collected for retraining the models.
+        
+        @TutorialReference(tutorial: "doc:RetrainModels")
+    }
+}

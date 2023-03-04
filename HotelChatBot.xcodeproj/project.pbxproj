@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A055F7529B3524C00243374 /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = 0A055F7429B3524C00243374 /* Documentation.docc */; };
+		0A055F7529B3524C00243374 /* HotelChatBot.docc in Sources */ = {isa = PBXBuildFile; fileRef = 0A055F7429B3524C00243374 /* HotelChatBot.docc */; };
+		0A055F7729B3B0EE00243374 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A055F7629B3B0EE00243374 /* ChatController.swift */; };
 		0A3B4DBC29AF7451003759E4 /* LanguageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */; };
 		0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B529A88D75000F7DFF /* Translations.swift */; };
 		0A3D13B829A8915F000F7DFF /* DataLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B729A8915F000F7DFF /* DataLoad.swift */; };
 		0A3D13BA29A891BA000F7DFF /* BaseData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A3D13B929A891BA000F7DFF /* BaseData.plist */; };
-		0A3D13BC29A8B2A0000F7DFF /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */; };
 		0A3D13BF29A90815000F7DFF /* HotelChatBotTagger 1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BD29A90815000F7DFF /* HotelChatBotTagger 1.mlmodel */; };
 		0A3D13C029A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13BE29A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel */; };
 		0A3E2BD629B22B960045250F /* BookingHtmlStyle.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0AFCBF2729ACF71A0056F007 /* BookingHtmlStyle.txt */; };
@@ -43,12 +43,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0A055F7429B3524C00243374 /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
+		0A055F7429B3524C00243374 /* HotelChatBot.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = HotelChatBot.docc; sourceTree = "<group>"; };
+		0A055F7629B3B0EE00243374 /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageWindowController.swift; sourceTree = "<group>"; };
 		0A3D13B529A88D75000F7DFF /* Translations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translations.swift; sourceTree = "<group>"; };
 		0A3D13B729A8915F000F7DFF /* DataLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoad.swift; sourceTree = "<group>"; };
 		0A3D13B929A891BA000F7DFF /* BaseData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = BaseData.plist; sourceTree = "<group>"; };
-		0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		0A3D13BD29A90815000F7DFF /* HotelChatBotTagger 1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "HotelChatBotTagger 1.mlmodel"; sourceTree = "<group>"; };
 		0A3D13BE29A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = "HotelChatbotTextClassifier 1.mlmodel"; sourceTree = "<group>"; };
 		0A4BD2EC29A78BF200BB2D01 /* OutputViewGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputViewGenerator.swift; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 		0A7939B029A4B2F200F7D000 = {
 			isa = PBXGroup;
 			children = (
-				0A055F7429B3524C00243374 /* Documentation.docc */,
+				0A055F7429B3524C00243374 /* HotelChatBot.docc */,
 				0A7939BB29A4B2F300F7D000 /* HotelChatBot */,
 				0A7939BA29A4B2F300F7D000 /* Products */,
 			);
@@ -118,11 +118,11 @@
 				0AFCBF1D29ACA13E0056F007 /* HotelChatbotModel.xcdatamodel */,
 				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0AAD97A929AE00110075264E /* BookingExtensions.swift */,
-				0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */,
 				0A7939C029A4B2F300F7D000 /* Assets.xcassets */,
 				0A7939C529A4B2F300F7D000 /* HotelChatBot.entitlements */,
 				0ACDFB3729B07D9600756589 /* Localizable.strings */,
 				0A4BD2EC29A78BF200BB2D01 /* OutputViewGenerator.swift */,
+				0A055F7629B3B0EE00243374 /* ChatController.swift */,
 				0A4BD2EE29A78C9400BB2D01 /* preBody.txt */,
 				0A4BD2EF29A78CF600BB2D01 /* postBody.txt */,
 				0AFCBF2729ACF71A0056F007 /* BookingHtmlStyle.txt */,
@@ -260,6 +260,7 @@
 				0AFCBF1E29ACA13E0056F007 /* HotelChatbotModel.xcdatamodel in Sources */,
 				0AECEC5529ABB724005554D6 /* HotelChatbotTextClassifier 3.mlmodel in Sources */,
 				0A7939BD29A4B2F300F7D000 /* AppDelegate.swift in Sources */,
+				0A055F7729B3B0EE00243374 /* ChatController.swift in Sources */,
 				0A4BD2FF29A7BB0A00BB2D01 /* Utilities.swift in Sources */,
 				0AECEC5729ABB7EB005554D6 /* HotelChatbotTextClassifier 4.mlmodel in Sources */,
 				0AECEC5129ABB376005554D6 /* HotelChatBotTagger 3.mlmodel in Sources */,
@@ -268,11 +269,10 @@
 				0AFCBF2929ACFCDD0056F007 /* Extensions.swift in Sources */,
 				0AECEC5329ABB464005554D6 /* HotelChatbotTextClassifier 2.mlmodel in Sources */,
 				0A3D13C029A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel in Sources */,
-				0A055F7529B3524C00243374 /* Documentation.docc in Sources */,
+				0A055F7529B3524C00243374 /* HotelChatBot.docc in Sources */,
 				0AFCBF2429ACB3860056F007 /* HotelChatBotTagger 4.mlmodel in Sources */,
 				0A4BD2FD29A7BAE600BB2D01 /* DatastoreController.swift in Sources */,
 				0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */,
-				0A3D13BC29A8B2A0000F7DFF /* ChatController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

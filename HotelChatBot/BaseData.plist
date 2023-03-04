@@ -31,7 +31,7 @@
 				<key>negativeAnswer</key>
 				<string>I&apos;m sorry, but I did not understand you. Please use the words firstname and lastname.&lt;br&gt;</string>
 				<key>positiveAnswer</key>
-				<string>&quot;Hello &lt;strong&gt;&lt;firstName&gt;&lt;/strong&gt; &lt;strong&gt;&lt;lastName&gt;&lt;/strong&gt;. Welcome to our hotel. &lt;br&gt;&quot;</string>
+				<string>Hello &lt;strong&gt;&lt;firstName&gt;&lt;/strong&gt; &lt;strong&gt;&lt;lastName&gt;&lt;/strong&gt;. Welcome to our hotel. &lt;br&gt;</string>
 				<key>checkAttributename</key>
 				<string>guest.firstname</string>
 				<key>questionNumber</key>

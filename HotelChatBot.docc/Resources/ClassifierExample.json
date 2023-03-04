@@ -1,0 +1,49 @@
+[
+    {
+        "text": "My first name is David and my last name is Johnson.",
+        "label": "hasNames"
+    },
+    {
+        "text": "I am proud of my first name, Emily, and my last name, Martinez.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Sarah and my last name is Davis.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My last name is Nguyen, but my first name is a bit difficult to pronounce.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Alex and my last name is Brown.",
+        "label": "hasNames"
+    },
+    {
+        "text": "I go by my middle name, Marie, instead of my first name, which is Rebecca, and my last name is Hernandez.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Jack and my last name is Smith, but I prefer to be called by my nickname, Jax.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Sophia and my last name is Lee, and I'm proud of my heritage.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Michael and my last name is Johnson, but everyone calls me Mike.",
+        "label": "hasNames"
+    },
+    {
+        "text": "My first name is Lauren and my last name is Thompson, and I'm a proud member of the Thompson family.",
+        "label": "hasNames"
+    },
+    {
+        "text": "Hello, I, am Lauren Thompson",
+        "label": "hasNames"
+    },
+    {
+        "text": "Please email me at jane.doe@example.com if you have any questions.",
+        "label": "hasMailaddress"
+    },

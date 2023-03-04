@@ -1,0 +1,91 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Essential steps for adjusting the chatbot.") {
+        The following steps describe what need to do to improve the chatbot and to adjust it to own needs
+        There are the following steps necessary:
+        1. Adjust the BaseData.plist file to your needs, by adding more rooms, defining more questions.
+        2. Optional adjust the core data model in HotelChatbotModel.xcdatamodel.
+        3. Create machine learning files.
+        4. Create the models
+        5. Put the models into the app.
+        6. Add special functionality into ChatController class.
+        
+        // @Image(source: BaseDataPlistPartview.png, alt: "Part view of the BaseData.plist file for workflow and other definitions.")
+    }
+    
+    @Section(title: "Check the database objects") {
+        @ContentAndMedia {
+            First you should think about the information you want to have from the guest.
+            Perhaps it is important to you to know if he wants to named by a neutral gend.
+            For those things you have to define the attributes associated with the Booking object.
+            Every attribute which is not optional is checked by the ChatController.
+            
+            @Image(source: BookingClassdiagram, alt: "Part from the class diagram")
+        }
+        
+        @Steps {
+            @Step {
+                Add attributes or other entities to the Booking entity. Define attributes as non optional to use for to fill by the chatbot.
+                @Image(source: CoredataModel, alt: "The core data model")
+            }
+            
+            @Step {
+                Add questions to the BaseData.plist file to control the workflow and to load them at app start into the database.
+                @Image(source: BaseDataPlistPartview, alt: "Part view of the BaseData.plist file for workflow definitions.")
+            }
+        }
+    }
+    
+    
+    @Section(title: "Create ML models") {
+        @ContentAndMedia {
+            After you know ahat you want to have, you must create training and test data for creating Natural Language Processing (NLP)
+            models. You need a set of classifier sentences and a set of sentences slitt into words and tag each word with a tag.
+            With the classifier the chat controller can identify which information is in the sentence.
+            @Image(source: create-ml-96x96_2x, alt: "Create ML symbol")
+        }
+        
+        @Steps {
+            @Step {
+                Create a file for training a sentence classifier model.
+                @Image(source: ClassifierExampleFile, alt: "Example of a classifier training file")
+            }
+            
+            @Step {
+                Create a file for training a word tagging model.
+                @Image(source: TaggingExampleFile, alt: "Example of a classifier training file")
+            }
+            
+            @Step {
+                Create the models model, a classifier model and a tagging model each for each supported language.
+                Drag and drop the model into the XCode project.
+                @Image(source: CreateMLExample, alt: "Create ML example")
+            }
+            
+            @Step {
+                Reference the model version in the 'ChatController'. The models should have names like the next example where _en is for the language and 1 is the version number:
+                'HotelChatBotTagger_en 1.mlmodel'
+                
+                @Code(name: "ChatController.swift", file: ChatControllerModelDefinition.swift) {
+                }
+            }
+        }
+    }
+    
+    @Section(title: "Add missing functionality") {
+        @ContentAndMedia {
+            For using the NLP analysis there is a need for additional functions. For example for getting mail adresses it is enough to know that in the text is an address
+            but in the next step you don't use word tagging. Instead you use a regex to get the address.
+            @Image(source: swift-og, alt: "Swift symbol")
+        }
+            
+        @Steps {
+            @Step {
+                Program the functionality for analysing the texts.
+
+                @Code(name: "ChatController.swift", file: ChatControllerTextAnalysis.swift) {
+                }
+            }
+        }
+    }
+    
+}

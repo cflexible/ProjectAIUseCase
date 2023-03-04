@@ -1,0 +1,39 @@
+@Tutorial(time: 10) {
+    @Intro(title: "What to do for improving the quality of the chatbot") {
+        A good ML model is trained from a large set of samples. So a developer is not able to create such a hugh
+        set. For this the app collects all the user input and creates training and testfiles when the app will terminate.
+        The disandvantage is that the end of the program is slow with a big set of data but this is only for the POC.
+        In a real world you have that in the background system and the user does not recognize that.
+        The created files can be used for retrain the models.
+        
+        @Image(source: CircleOfLife, alt: "Circle of life symbol")
+    }
+    
+    @Section(title: "Check the training files") {
+        @ContentAndMedia {
+            The text input from the user is stored into the database with or without correct classifier and tags.
+            So the first step is to check these files and correct them.
+            
+            @Image(source: ClassifierExampleFile, alt: "Classifier example")
+        }
+        
+        @Steps {
+            @Step {
+                Open the json files for training and testing. Check all the classifier and tags if they are correct.
+                Perhaps you can use other tools than a standard editor to generate more examples from these sets.
+                For example you can use sentences with names and a list of names to generate many more trainings sentences.
+                With each sentence the ML model will be better and better.
+                
+                @Code(name: "ClassifierExample.json", file: ClassifierExample.json)
+            }
+            @Step {
+                When you have created new training and test files you can create new models or model versions and put them into the
+                XCode project. This can be done by a developer. It would also be possible to put the models to a place where the
+                app can read them without compiling the code. Please ask your developer to do this.
+                
+                Please use the How to adjust tutorial.
+            }
+            
+        }
+    }
+}
