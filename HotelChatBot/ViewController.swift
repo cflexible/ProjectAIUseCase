@@ -50,8 +50,6 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         webView.navigationDelegate = self
         webView.loadHTMLString(html, baseURL: nil)
         
-        let test = Utilities.getAnonymUserID()
-        print(test)
     }
 
     

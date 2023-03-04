@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A055F7529B3524C00243374 /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = 0A055F7429B3524C00243374 /* Documentation.docc */; };
 		0A3B4DBC29AF7451003759E4 /* LanguageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */; };
 		0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B529A88D75000F7DFF /* Translations.swift */; };
 		0A3D13B829A8915F000F7DFF /* DataLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3D13B729A8915F000F7DFF /* DataLoad.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A055F7429B3524C00243374 /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
 		0A3B4DBB29AF7451003759E4 /* LanguageWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageWindowController.swift; sourceTree = "<group>"; };
 		0A3D13B529A88D75000F7DFF /* Translations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translations.swift; sourceTree = "<group>"; };
 		0A3D13B729A8915F000F7DFF /* DataLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoad.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		0A7939B029A4B2F200F7D000 = {
 			isa = PBXGroup;
 			children = (
+				0A055F7429B3524C00243374 /* Documentation.docc */,
 				0A7939BB29A4B2F300F7D000 /* HotelChatBot */,
 				0A7939BA29A4B2F300F7D000 /* Products */,
 			);
@@ -265,6 +268,7 @@
 				0AFCBF2929ACFCDD0056F007 /* Extensions.swift in Sources */,
 				0AECEC5329ABB464005554D6 /* HotelChatbotTextClassifier 2.mlmodel in Sources */,
 				0A3D13C029A90815000F7DFF /* HotelChatbotTextClassifier 1.mlmodel in Sources */,
+				0A055F7529B3524C00243374 /* Documentation.docc in Sources */,
 				0AFCBF2429ACB3860056F007 /* HotelChatBotTagger 4.mlmodel in Sources */,
 				0A4BD2FD29A7BAE600BB2D01 /* DatastoreController.swift in Sources */,
 				0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */,
@@ -432,6 +436,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.luenstedt.HotelChatBot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -459,6 +464,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.luenstedt.HotelChatBot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
