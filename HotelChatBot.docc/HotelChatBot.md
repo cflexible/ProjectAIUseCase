@@ -37,6 +37,7 @@ An example view from a beginning of a chat:
 - <doc:ChatbotWorkflow>
 - <doc:DatabaseStructure>
 - <doc:HowToAdjust>
+- <doc:RetrainModels>
 
 ### Main Classes
 
