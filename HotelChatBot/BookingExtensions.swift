@@ -10,12 +10,12 @@ import CoreData
 
 
 /**
-    Extension for the Booking class
+    Extension for the Booking class. The Booking class comes from the CoreData model. Therefor we do not have a real class file we use this extensions.
  */
 public extension Booking {
     
     /**
-        If we create a booking object we also create a guest object becaise we need it and we have now a central position of creating the objects.
+        If creating a booking object also a guest object is created because it is needed and with this there is a central position of creating the objects.
      */
     static func createBooking() -> Booking {
         let booking: Booking = (DatastoreController.shared.createNewEntityByName("Booking") as? Booking)!
@@ -41,6 +41,9 @@ public extension Booking {
     }
     
     
+    /**
+        If the Booking is complete it is set to the last state and store that into the database.
+     */
     func finishBooking() -> Bool {
         if bookingComplete() {
             self.state = "booked"
@@ -51,7 +54,7 @@ public extension Booking {
     
     
     /**
-        we try to book empty rooms and if this is successful we return true
+        Try to book empty rooms and if this is successful return true.
      */
     func bookRooms(fromDate: Date, toDate: Date, countPersons: Int) -> Int {
         #if DEBUG
@@ -98,9 +101,24 @@ public extension Booking {
     
     
     /**
-        we look if there are free rooms available for the given time range
+        A text with the information if free rooms are available is returned.
      */
-    static func freeRooms(fromDate: Date, toDate: Date, countPersons: Int) -> String {
+    static func freeRoomsText(fromDate: Date, toDate: Date, countPersons: Int) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        let freeRooms: [Room]? = freeRooms(fromDate: fromDate, toDate: toDate, countPersons: countPersons)
+        
+        return Translations().getTranslation(text: "There are ") + String(freeRooms?.count ?? 0) +
+            Translations().getTranslation(text: "for max ") + String(possibleGuests(rooms: freeRooms)) +
+            Translations().getTranslation(text: " guests avaliable for that time range.")
+    }
+    
+    /**
+        Look for free rooms and return a list of them
+     */
+    static func freeRooms(fromDate: Date, toDate: Date, countPersons: Int) -> [Room]? {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
         #endif
@@ -116,22 +134,38 @@ public extension Booking {
         }
         
         let roomPredicate = NSPredicate.init(format: "not room in \(bookedRooms)")
-        var freeRooms: [Room]? = DatastoreController.shared.allForEntity("Room", with: roomPredicate) as? [Room]
+        let freeRooms: [Room]? = DatastoreController.shared.allForEntity("Room", with: roomPredicate) as? [Room]
         // we should add a sort with count of beds later but for now all rooms have two beds
+        
+        return freeRooms
+    }
+
+
+    /**
+        Return the possible numbers of guests for the rooms
+     */
+    static func possibleGuests(rooms: [Room]?) -> Int {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        if rooms == nil {
+            return 0
+        }
         
         var possibleGuests = 0
         
         // We count the free beds
-        for freeRoom: Room in freeRooms ?? [] {
+        for freeRoom: Room in rooms ?? [] {
             possibleGuests += Int(freeRoom.numberOfBeds)
         }
         
-        return "There are \(freeRooms?.count ?? 0) for max \(possibleGuests) guests avaliable for that time range."
+        return possibleGuests
     }
     
  
     /**
-        we look for the room prices
+        Look for the room prices and return a text for the user.
      */
     static func roomPrices() -> String {
         #if DEBUG
@@ -140,7 +174,7 @@ public extension Booking {
 
         let roomPredicate = NSPredicate.init(format: "")
         let orderBy       = NSSortDescriptor.init(key: "price", ascending: true)
-        var freeRooms: [Room]? = DatastoreController.shared.allForEntity("Room", with: roomPredicate, orderBy: [orderBy]) as? [Room]
+        let freeRooms: [Room]? = DatastoreController.shared.allForEntity("Room", with: roomPredicate, orderBy: [orderBy]) as? [Room]
         let lowestPrice  = freeRooms?.first?.price ?? 0.00
         let highestPrice = freeRooms?.last?.price ?? 0.00
         
@@ -150,10 +184,11 @@ public extension Booking {
         formatter.currencyCode = "€"
 
         if lowestPrice == highestPrice {
-            return "Our rooms costs \(formatter.string(for: lowestPrice) ?? "unknown")."
+            return Translations().getTranslation(text:"Our rooms costs ") + (formatter.string(for: lowestPrice) ?? Translations().getTranslation(text:"unknown")) + "."
         }
         else {
-            return "Our rooms costs between \(formatter.string(for: lowestPrice) ?? "unknown") and \(formatter.string(for: highestPrice) ?? "unknown")."
+            return Translations().getTranslation(text:"Our rooms costs between ") + (formatter.string(for: lowestPrice) ?? Translations().getTranslation(text:"unknown")) +
+            Translations().getTranslation(text:" and ") + (formatter.string(for: highestPrice) ?? Translations().getTranslation(text:"unknown")) + "."
         }
 
     }
@@ -205,83 +240,81 @@ public extension Booking {
         html = html + "<div class=\"divTable blueTable\">"
         html = html + "<div class=\"divTableHeading\">"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableHead\">What</div>"
+        html = html + "<div class=\"divTableHead\">" + Translations().getTranslation(text:"What") + "</div>"
         html = html + "<div class=\"divTableHead\">Your value</div>"
         html = html + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableBody\">"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Name</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Name") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.firstname)! + " " + (self.guest?.lastname)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Stay from</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Stay from") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.startDate!.description + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Stay to</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Stay to") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.endDate!.description + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Number of guests</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Number of guests") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.numberOfGuests) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Number of children</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Number of children") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.numberOfChildren) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">With breakfast</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"With breakfast") + "</div>"
         if breakfast {
-            boolString = NSLocalizedString("YES", comment: "")
+            boolString = Translations().getTranslation(text:"YES")
         }
         else {
-            boolString = NSLocalizedString("NO", comment: "")
+            boolString = Translations().getTranslation(text:"NO")
         }
         html = html + "<div class=\"divTableCell\">" + boolString + "</div>"
         html = html + "</div>"
         if parkings?.count ?? 0 > 0 {
-            boolString = NSLocalizedString("YES", comment: "")
+            boolString = Translations().getTranslation(text:"YES")
         }
         else {
-            boolString = NSLocalizedString("NO", comment: "")
+            boolString = Translations().getTranslation(text:"NO")
         }
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Parkingplace</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Parkingplace") + "</div>"
         html = html + "<div class=\"divTableCell\">" + boolString + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Visit type</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Visit type") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.guestType! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Payment type</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Payment type") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.paymentMethod! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Phone</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Phone") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.phonenumber)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Mail</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Mail") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.mailaddress)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Booked rooms</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Booked rooms") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.rooms!.count) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">Comment</div>"
+        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Comment") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.comment ?? "") + "</div>"
         html = html + "</div>"
         html = html + "</div>"
         html = html + "</div>"
         return html
     }
-}
 
 
-public extension NSManagedObject {
     func bookingComplete() -> Bool {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -312,7 +345,7 @@ public extension NSManagedObject {
                 return false
             }
             else {
-                return (self.value(forKey: key) as! NSManagedObject).bookingComplete()
+                return (self.value(forKey: key) as! Booking).bookingComplete()
             }
         }
 

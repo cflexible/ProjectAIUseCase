@@ -7,10 +7,15 @@
 
 import Cocoa
 
+/**
+ This is a helper class for getting a better training data base for sentence classification.
+ We store every user input with the found classifier. At the end of the program we take these entries to generate language dependend traings and test files.
+ The trainings base includes 75% random entries and the test base the rest.
+ */
 class ClassifierHelper: NSObject {
     
     /**
-     we add a new text to the table
+     Add a new text to the table
      */
     static func addText(language: String, text: String, classifierString: String?) {
         #if DEBUG
@@ -32,7 +37,7 @@ class ClassifierHelper: NSObject {
     
     
     /**
-      we look for the existing languages in the classifier table and create one file for each language
+      Look for the existing languages in the classifier table and create one file for each language
      */
     static func createMLFiles() {
         #if DEBUG
@@ -57,7 +62,7 @@ class ClassifierHelper: NSObject {
     
     
     /**
-     We write all the classifier data into two files, one for training and one for testing
+     Write all the classifier for one language data into two files, one for training and one for testing
      */
     private static func createMLFiles(language: String) {
         #if DEBUG
@@ -138,6 +143,9 @@ class ClassifierHelper: NSObject {
         }
     }
     
+    /**
+        This is just a test function to have a trainingsbase in the database.
+     */
     static func loadTrainingsdataOnce() {
         var classifier: Classifierdefinitions? = DatastoreController.shared.createNewEntityByName("Classifierdefinitions") as? Classifierdefinitions
         classifier?.text = "My first name is David and my last name is Johnson."

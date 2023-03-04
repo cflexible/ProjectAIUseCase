@@ -7,6 +7,11 @@
 
 import Cocoa
 
+/**
+ Start and end class of the app. Here it is possible to react on open or termination events.
+ There are two functions used. One is to load some classifier trainingdata from a file into the database. This is just for building up a dataset for later use.
+ When the app will be terminate we read all the classifier and tagging information we created from the user input and write them into language separated files on the desktop.
+ */
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 

@@ -7,14 +7,19 @@
 
 import Cocoa
 
+/**
+ This class is for controlling the help view. It has just two view parts, a NSTextField for the help text and an NSBotton for confirming the message and slosing the window.
+ */
 class HelpViewController: NSViewController {
 
+    /// The textfield for visualizing the help text
     @IBOutlet weak var helptextField: NSTextField!
+    /// The button for closing the window
     @IBOutlet weak var okButton:      NSButton!
 
     
     /**
-        Default function when this view is loaded
+        Default function when this view is loaded. Here the base text is set plus the help text from the actual question of the workflow.
      */
     override func viewDidLoad() {
         #if DEBUG

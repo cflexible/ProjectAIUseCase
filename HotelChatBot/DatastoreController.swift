@@ -9,24 +9,30 @@
 import Foundation
 import CoreData
 
+/**
+ An old class from many projects with some new functions. So the documentation is not complete and partial in German. 
+ */
 class DatastoreController: NSObject {
-    var modelNumberString: String { return "" }
-    var modelBaseName:     String { return "HotelChatbotModel" }
+    private var modelNumberString: String { return "" }
+    private var modelBaseName:     String { return "HotelChatbotModel" }
     
-    var persistentStoreCoordinator:NSPersistentStoreCoordinator? = nil
-    var managedObjectContext:NSManagedObjectContext? = nil
-    let batchsize = 50
-    var actBatchStart = 0
-    var batch = false
-    var actEntityName = ""
+    private var persistentStoreCoordinator:NSPersistentStoreCoordinator? = nil
+    private var managedObjectContext:NSManagedObjectContext? = nil
+    private let batchsize = 50
+    private var actBatchStart = 0
+    private var batch = false
+    private var actEntityName = ""
     
+    /// The usable property to get the singleton DatastoreController instance. This is important because with this the methods get usable.
     static let shared = DatastoreController() // Usage: DatastoreController.shared
-    let dbPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]
     
-    /** @Method    init
+    private let dbPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]
+    
+    /**
+     *  @Method    init
      *  @Parameter --
      *     @Return    --
-     *  Initialisiert das Singleton und dazu die Datenbank im Dateisystem.
+     *  Initializes a singleton and the database in the file system.
      */
     override init() {  //This prevents others from using the default '()' initializer for this class.
         // Ziel der Initialisierung ist es einen managed Object Context zu bekommen, denn den brauchen wir in allen anderen Funktionen
@@ -87,7 +93,8 @@ class DatastoreController: NSObject {
     /**
      Bereich für die allgemeinen Funktionen
      */
-    /** @Method    saveToPersistentStore
+    /**
+     *  @Method    saveToPersistentStore
      *  @Parameter --
      *     @Return    Bool
      *  Tries to save the actual managed object context and returns true or false depending on the success.
@@ -164,7 +171,8 @@ class DatastoreController: NSObject {
     }
 
     
-    /** @Method    rollback
+    /**
+     *  @Method    rollback
      *  @Parameter --
      *     @Return    --
      *  Rollsback to the last save.
@@ -179,7 +187,8 @@ class DatastoreController: NSObject {
     
     
     //MARK: Entity functions
-    /** @Method    allForEntity entityName predicate
+    /**
+     *  @Method    allForEntity entityName predicate
      *  @Parameter String
      *     @Return    NSArray
      *  Fetches all entities for the given name.
@@ -224,7 +233,8 @@ class DatastoreController: NSObject {
     }
     
     
-    /** @Method    allForEntity entityName predicate orderBy
+    /**
+     *  @Method    allForEntity entityName predicate orderBy
      *  @Parameter String NSPredicate NSSortDescriptor
      *     @Return    NSArray
      *  Fetches all entities for the given name.
@@ -270,7 +280,8 @@ class DatastoreController: NSObject {
     }
     
     
-    /** @Method    allForEntity entityName
+    /**
+     *  @Method    allForEntity entityName
      *  @Parameter String
      *     @Return    NSArray
      *  Fetches all entities for the given name.
@@ -284,7 +295,8 @@ class DatastoreController: NSObject {
         }
 
 
-    /** @Method    entityByName entityName
+    /**
+     *  @Method    entityByName entityName
      *  @Parameter String
      *     @Return    NSArray
      *  Fetches one / the first entity for the given name.
@@ -314,7 +326,8 @@ class DatastoreController: NSObject {
     }
 
 
-    /** @Method    entityByName entityName key value
+    /**
+     *  @Method    entityByName entityName key value
      *  @Parameter String, String, NSObject
      *     @Return    NSArray
      *  Fetches one / the first entity for the given name and the given search criteria.
@@ -348,7 +361,8 @@ class DatastoreController: NSObject {
     }
 
     
-    /** @Method    entityByName entityName key value
+    /**
+     *  @Method    entityByName entityName key value
      *  @Parameter String, String, NSObject
      *     @Return    NSArray
      *  Fetches one / the first entity for the given name and the given search criteria.
@@ -392,7 +406,9 @@ class DatastoreController: NSObject {
     }
 
     
-
+    /**
+        Refetch an enity if it is changed.
+     */
     func refetchEntity(_ entity: NSManagedObject) -> NSManagedObject {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -402,7 +418,8 @@ class DatastoreController: NSObject {
     }
     
     
-    /** @Method    createNewEntityByName
+    /**
+     *  @Method    createNewEntityByName
      *  @Parameter String
      *     @Return    NSManagedObject
      *  Creates a new NSManagedObject for the given Entity
@@ -420,7 +437,8 @@ class DatastoreController: NSObject {
     }
 
 
-    /** @Method    removeEntity
+    /**
+     *  @Method    removeEntity
      *  @Parameter NSManagedObject
      *     @Return    --
      *  Deletes a NSManagedObject
@@ -434,7 +452,8 @@ class DatastoreController: NSObject {
     }
 
 
-    /** @Method    removeAllEntitiesByName
+    /**
+     *  @Method    removeAllEntitiesByName
      *  @Parameter String
      *     @Return    --
      *  Deletes all objects of a given entity name
@@ -452,7 +471,8 @@ class DatastoreController: NSObject {
     }
 
 
-    /** @Method    removeEntityHirarchy
+    /**
+     *  @Method    removeEntityHirarchy
      *  @Parameter NSManagedObject
      *     @Return    --
      *  Deletes the entity and all of its children
@@ -475,10 +495,11 @@ class DatastoreController: NSObject {
 
 
     //MARK: Helper Funtions
-    /** @Method    dbSize
+    /**
+     *  @Method    dbSize
      *  @Parameter --
      *     @Return    uint64_t
-     *  ermittle die Datenbankgröße
+     *  Get the size of the database
      */
     func dbSize() -> NSNumber? {
         #if DEBUG

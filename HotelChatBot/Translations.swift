@@ -7,7 +7,12 @@
 
 import Cocoa
 
+/**
+ This class is for translating text into a wished language. The default Localized.strings file is not used but the Translation table from the database.
+ */
 class Translations: NSObject {
+    
+    /// The destination language for the translation. If no is defined "en" is used.
     public static var translationLanguage: String = NSLocale.current.language.languageCode?.identifier ?? "en"
     
     /**

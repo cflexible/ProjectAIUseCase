@@ -7,10 +7,15 @@
 
 import Cocoa
 
+/**
+ This is a helper class for getting a better training data base for word tagging.
+ We store every user input with the found words and tags. At the end of the program we take these entries to generate language dependend traings and test files.
+ The trainings base includes 75% random entries and the test base the rest.
+ */
 class TaggerHelper: NSObject {
 
     /**
-     we add a new text to the table
+     Add a new text to the tagging table
      */
     static func addTag(language: String, words: [String], tags: [String]) {
         #if DEBUG
@@ -53,7 +58,7 @@ class TaggerHelper: NSObject {
     
     
     /**
-      we look for the existing languages in the classifier table and create one file for each language
+      Look for the existing languages in the tagger table and create one file for each language
      */
     static func createMLFiles() {
         #if DEBUG
@@ -79,7 +84,7 @@ class TaggerHelper: NSObject {
     
 
     /**
-     We write all the classifier data into two files, one for training and one for testing
+      Write all the words and taggings for one language data into two files, one for training and one for testing
      */
     private static func createMLFiles(language: String) {
         #if DEBUG

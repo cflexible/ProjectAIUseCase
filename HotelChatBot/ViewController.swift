@@ -1,21 +1,34 @@
 //
 //  ViewController.swift
 //  HotelChatBot
-//  This is the central controller class which is used to control the view elements and the app main process
 //  Created by Jens Lünstedt on 21.02.23.
 //
 
 import Cocoa
 import WebKit
 
-class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegate, NSWindowDelegate {
+/**
+ This is the central controller class which is used to control the view elements and the app main process.
+ VievController is called after the AppDelegate. It is used in the storyboard for the main window content.
+ On this there are three view elements which are controlled from this controller:
+ - the output in a WKWebView with a HTML content
+ - the users input in a NSTextField where we need the delegates of this field
+ - a progress indicator which is visible while the chatbot analyses the text
+ */
+class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegate, NSWindowDelegate, LanguageChangeDelegate {
 
+    /// The central element to visualize the chat
     @IBOutlet weak var webView:    WKWebView!
+    /// The text input field for the user content
     @IBOutlet weak var editField:  NSTextField!
+    /// The indicator for that the chat is working
     @IBOutlet weak var botWorking: NSProgressIndicator!
     
+    /// Sub class for generating the webViews HTML content
     var outviewGenerator = OutputViewGenerator()
     
+    /// A second ViewController to visualize help to the user if he presses the help button.
+    /// The content of the help view depends on the actual state of the booking workflow.
     var helpviewController: HelpViewController?
 
     /**
@@ -36,6 +49,9 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
         let html: String = outviewGenerator.newHotelChat(text: ChatController.getNextQuestion())
         webView.navigationDelegate = self
         webView.loadHTMLString(html, baseURL: nil)
+        
+        let test = Utilities.getAnonymUserID()
+        print(test)
     }
 
     
@@ -67,13 +83,6 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
     }
     
     
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-    
-    
     /**
         Event when the user changed the text in the editing field. A new high is calculated with the next function til a maximum so the user should not have to scroll
      */
@@ -102,6 +111,7 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             let languageWindowController = Utilities.storyBoard.instantiateController(withIdentifier: "LanguageQuestionWindow") as! NSWindowController
             let languageController: LanguageWindowController = languageWindowController.contentViewController as! LanguageWindowController
             languageController.setLanguages(oldLanguage: ChatController.currentLanguage, newLanguage: textLanguage)
+            languageController.delegate = self
             let application = NSApplication.shared
             application.runModal(for: languageWindowController.window!)
             languageWindowController.close()
@@ -123,6 +133,14 @@ class ViewController: NSViewController, NSTextFieldDelegate, WKNavigationDelegat
             let html: String = outviewGenerator.newHotelChat(text: NSLocalizedString("You can close the window now.", comment: ""))
             webView.loadHTMLString(html, baseURL: nil)
         }
+    }
+    
+    
+    /**
+        Delegate function from LanguageWindowController if the language should change
+     */
+    func newLanguage(_ language: String) {
+        ChatController.currentLanguage = language
     }
     
     

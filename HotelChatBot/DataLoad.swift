@@ -7,9 +7,13 @@
 
 import Foundation
 
+/**
+ DatLoad is a helper class to load the basic configuration from the BaseData.plist file into the database.
+ For example the rooms are definied in the plist and with this it is easy to change the configuration.
+ */
 class DataLoad: NSObject {
 
-    // definition of the structures of the plist files to get an interpretation of the content
+    /// Definition of the structures of the plist files to get an interpretation of the content.
     struct AppValues: Codable {
         var rooms: [RoomStruc]
         struct RoomStruc: Codable {
@@ -71,7 +75,7 @@ class DataLoad: NSObject {
                     _ = DatastoreController.shared.saveToPersistentStore()
                 }
                 else {
-                    var newRoomObject: Room = DatastoreController.shared.createNewEntityByName("Room") as! Room
+                    let newRoomObject: Room = DatastoreController.shared.createNewEntityByName("Room") as! Room
                     newRoomObject.roomNumber      = Int16(room.attributes.roomNumber)
                     newRoomObject.name            = room.attributes.name
                     newRoomObject.numberOfBeds    = Int16(room.attributes.numberOfBeds)
@@ -90,7 +94,7 @@ class DataLoad: NSObject {
                     _ = DatastoreController.shared.saveToPersistentStore()
                 }
                 else {
-                    var newParkingplaceObject: Parkingplace = DatastoreController.shared.createNewEntityByName("Parkingplace") as! Parkingplace
+                    let newParkingplaceObject: Parkingplace = DatastoreController.shared.createNewEntityByName("Parkingplace") as! Parkingplace
                     newParkingplaceObject.id            = parkingplace.attributes.id
                     newParkingplaceObject.hasCharger    = parkingplace.attributes.hasCharger
                     newParkingplaceObject.price         = NSDecimalNumber(value: parkingplace.attributes.price)
@@ -113,7 +117,7 @@ class DataLoad: NSObject {
                     _ = DatastoreController.shared.saveToPersistentStore()
                 }
                 else {
-                    var newWorkflowObject: Workflow = DatastoreController.shared.createNewEntityByName("Workflow") as! Workflow
+                    let newWorkflowObject: Workflow = DatastoreController.shared.createNewEntityByName("Workflow") as! Workflow
                     newWorkflowObject.questionNumber      = Int16(workflow.attributes.questionNumber)
                     newWorkflowObject.englishText         = workflow.attributes.englishText
                     newWorkflowObject.negativeAnswer      = workflow.attributes.negativeAnswer

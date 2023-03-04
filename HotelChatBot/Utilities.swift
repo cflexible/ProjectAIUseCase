@@ -8,12 +8,19 @@
 import Foundation
 import AppKit
 
+/**
+ This class includes a collection of different usefull methods. Therefore the documentation is partially in German and less documented.
+ */
 class Utilities: NSObject {
 
+    /// For easier use we have a central place to get the storyboard. If the name is other then Main it must be changed here
     static let storyBoard: NSStoryboard = NSStoryboard.init(name:"Main", bundle:nil)
+    /// If there is a project where a temperature output is wished, this is a formatter with the locale definition.
     static let tempValueFormatter = NumberFormatter()
+    /// If there is a project where a humanity output is wished, this is a formatter with the locale definition.
     static let humValueFormatter  = NumberFormatter()
 
+    /// Method for defining the temperature formatter.
     static func tempFormatter() -> NumberFormatter {
         tempValueFormatter.numberStyle = .decimal
         tempValueFormatter.locale      = Locale.current
@@ -23,6 +30,8 @@ class Utilities: NSObject {
         return tempValueFormatter
     }
     
+    
+    /// Method for defining the humanity formatter.
     static func humFormatter() -> NumberFormatter {
         humValueFormatter.numberStyle = .decimal
         humValueFormatter.locale      = Locale.current
@@ -32,6 +41,8 @@ class Utilities: NSObject {
         return humValueFormatter
     }
     
+
+    /// Method for getting the long name of the current system country.
     class func getDefaultCountry()->String {
         let localeComponents = NSLocale.current.identifier.components(separatedBy: "_")
         var region:String = ""
@@ -60,6 +71,7 @@ class Utilities: NSObject {
     }
     
     
+    /// Returns the actual system country, e.g. DE
     class func getCountry()->String {
         let localeComponents = NSLocale.current.identifier.components(separatedBy: "_")
         var region:String = ""
@@ -71,6 +83,7 @@ class Utilities: NSObject {
     }
     
 
+    /// Returns the actual system user language, e.g. de
     class func getLanguage()->String {
         let localeComponents = NSLocale.current.identifier.components(separatedBy: "_")
         //var region:String    = ""
@@ -83,7 +96,9 @@ class Utilities: NSObject {
     }
     
     
-    
+    /**
+        There is a need for an user id. It is taken from library directory which has a complex number on iOS. On Mac OS we get the users short name.
+     */
     class func getAnonymUserID()->String {
         // We have no user ID so for having an ID who has changed a value we use the last part of the directory of the App
         var path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]
@@ -99,6 +114,9 @@ class Utilities: NSObject {
     }
     
 
+    /**
+        This method converts some letters into HTML and XML usable strings
+     */
     class func convertSpecialCharacters(_ string: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -118,6 +136,10 @@ class Utilities: NSObject {
         return newString
     }
     
+
+    /**
+        This method converts some letters from HTML and XML usable strings into human readable strings
+     */
     class func reConvertSpecialCharacters(_ string: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -138,6 +160,9 @@ class Utilities: NSObject {
     }
     
     
+    /**
+        Returns the degrees for a wishe rotate
+     */
     class func imageDegrees(orientation: Int) -> Int {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -154,6 +179,9 @@ class Utilities: NSObject {
     }
     
     
+    /**
+        Returns the library path of the system user.
+     */
     class func libPath() -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -162,6 +190,10 @@ class Utilities: NSObject {
         return NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0]
     }
     
+
+    /**
+        Returns the documentation foider path of the system user.
+     */
     class func docPath() -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -170,6 +202,10 @@ class Utilities: NSObject {
         return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
     }
     
+    
+    /**
+        This method compares two files if the newer file is really newer
+     */
     class func isNewerFile(newFileURL: URL, existingFileURL: URL) -> Bool {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -193,6 +229,9 @@ class Utilities: NSObject {
     }
     
     
+    /**
+        Replace a file from a location to another location
+     */
     class func replaceItem(at dstURL: URL, with srcURL: URL) {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -207,6 +246,9 @@ class Utilities: NSObject {
     }
     
     
+    /**
+        The goal of this method is to test if an object as an attribute with the given name.
+     */
     static func hasProperty(object: AnyObject, name: String) -> Bool {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -223,7 +265,7 @@ class Utilities: NSObject {
     
     
     /**
-        Wir ermitteln das aktuelle Jahr als String
+        Give back the current year as a string.
      */
     static func actualYear() -> String {
         #if DEBUG
@@ -239,6 +281,9 @@ class Utilities: NSObject {
     }
 
 
+    /**
+        Returns a name for the number of the month.
+     */
     static func monthNameOf(monthNo: Int) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -262,7 +307,7 @@ class Utilities: NSObject {
     
     
     /**
-        This function checks if we have a network connection
+        This function checks if we have a network connection.
     */
     class func isConnectedToNetwork() -> Bool {
         #if DEBUG
@@ -272,30 +317,17 @@ class Utilities: NSObject {
         var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
         zeroAddress.sin_family = sa_family_t(AF_INET)
-        /*
-        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
-            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
-                NetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
-            }
-        }
-        
-        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags(rawValue: 0)
-        if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
-            return false
-        }
-        
-        // Working for Cellular and WIFI
-        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
-        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        let ret = (isReachable && !needsConnection)
-        
-        return ret
- */
+
         return true
         
     }
 
     
+    /**
+        Calculate a tendency from a list of double values. The first value is the start value from where the tendence start.
+        The second return value is the tendence factor which you can use to multiply your oserved value.
+        If the second value is negative the tendence is also negative.
+     */
     static func calculateTendency(valuesInOrder: [Double]?) -> (Double, Double)? {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -342,6 +374,9 @@ class Utilities: NSObject {
     }
     
     
+    /**
+        Returns a String of a time with a given time in seconds.
+     */
     static func stringOfSeconds(_ seconds: Int) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -420,7 +455,7 @@ class Utilities: NSObject {
     
     
     /**
-        We search the first mail address from a text and return it
+        Search the first mail address from a text and return it
      */
     static func getMailAddressFromText(_ text: String?) -> String? {
         #if DEBUG

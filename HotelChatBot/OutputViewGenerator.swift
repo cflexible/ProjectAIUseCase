@@ -8,13 +8,24 @@
 import Foundation
 import AppKit
 
+/**
+ Class for generating the HTML output view. We have a first HTML part with the main header information until the beginning of the body.
+ This is read from the ressource preBody.txt. Then there is a list of entries with the chats from the bot and the user. These are filled into
+ the body part. The HTML is completed whith the content of the file postBody.txt. There are also two images which are converted into
+ base64 strings and they are put into the header style of the HTML
+ */
 class OutputViewGenerator: NSObject {
     
-    var preBody:  String   = ""
-    var postBody: String   = ""
-    var entries:  [String] = []
-    var hotelBase64Image: String = ""
-    var guestBase64Image: String = ""
+    /// The string with the content from preBody.txt file
+    var preBody:          String   = ""
+    /// The string with the content from the postBody.txt file
+    var postBody:         String   = ""
+    /// List of the different entries of the chat
+    var entries:         [String]  = []
+    /// The string with the base64 image for the hotel image
+    var hotelBase64Image: String   = ""
+    /// The string with the base64 image for the guest image
+    var guestBase64Image: String   = ""
 
     /**
         we initialize the variables which holds the html code til the body and to close the body / html from to text files from the app resources

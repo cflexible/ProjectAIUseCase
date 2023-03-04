@@ -28,7 +28,6 @@
 		0A7939C129A4B2F300F7D000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A7939C029A4B2F300F7D000 /* Assets.xcassets */; };
 		0A7939C429A4B2F300F7D000 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A7939C229A4B2F300F7D000 /* Main.storyboard */; };
 		0AAD97AA29AE00110075264E /* BookingExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAD97A929AE00110075264E /* BookingExtensions.swift */; };
-		0ABCB69829AA617300B89FA7 /* BookingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABCB69729AA617300B89FA7 /* BookingController.swift */; };
 		0ACDFB3529B07D9600756589 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0ACDFB3729B07D9600756589 /* Localizable.strings */; };
 		0ACDFB3A29B0D06F00756589 /* TaggerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACDFB3929B0D06F00756589 /* TaggerHelper.swift */; };
 		0AECEC4F29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0AECEC4E29ABB18E005554D6 /* HotelChatBotTagger 2.mlmodel */; };
@@ -65,7 +64,6 @@
 		0A7939C329A4B2F300F7D000 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0A7939C529A4B2F300F7D000 /* HotelChatBot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HotelChatBot.entitlements; sourceTree = "<group>"; };
 		0AAD97A929AE00110075264E /* BookingExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingExtensions.swift; sourceTree = "<group>"; };
-		0ABCB69729AA617300B89FA7 /* BookingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingController.swift; sourceTree = "<group>"; };
 		0ACDFB3629B07D9600756589 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0ACDFB3829B07DAA00756589 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0ACDFB3929B0D06F00756589 /* TaggerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggerHelper.swift; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 				0AFCBF2829ACFCDD0056F007 /* Extensions.swift */,
 				0AAD97A929AE00110075264E /* BookingExtensions.swift */,
 				0A3D13BB29A8B2A0000F7DFF /* ChatController.swift */,
-				0ABCB69729AA617300B89FA7 /* BookingController.swift */,
 				0A7939C029A4B2F300F7D000 /* Assets.xcassets */,
 				0A7939C529A4B2F300F7D000 /* HotelChatBot.entitlements */,
 				0ACDFB3729B07D9600756589 /* Localizable.strings */,
@@ -271,7 +268,6 @@
 				0AFCBF2429ACB3860056F007 /* HotelChatBotTagger 4.mlmodel in Sources */,
 				0A4BD2FD29A7BAE600BB2D01 /* DatastoreController.swift in Sources */,
 				0A3D13B629A88D75000F7DFF /* Translations.swift in Sources */,
-				0ABCB69829AA617300B89FA7 /* BookingController.swift in Sources */,
 				0A3D13BC29A8B2A0000F7DFF /* ChatController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

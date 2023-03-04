@@ -7,7 +7,9 @@
 
 import Foundation
 
-
+/**
+ Useful extensions for String
+ */
 public extension String {
     /**
         In this function we return a part of the string if it maches the given regex. We use this e.g. to extract an eMail from a text.
@@ -17,15 +19,11 @@ public extension String {
         let results = regex.matches(in: self, range: NSRange(startIndex..., in: self))
         return results.map { String(self[Range($0.range, in: self)!]) }
     }
-}
 
-
-/**
-    This method gives us a concrete number for a word. we use this to get number from word like first, second or ordinals like 1st
- */
-public extension String {
     /**
-        Transformation of a string if it is a named integer like first to a real Int which we can use easier
+     This method gives us a concrete number for a word. we use this to get number from word like first, second or ordinals like 1st.
+     A String is returned because if the transformation was not able the given String can be used for other editing.
+     The transformation is language dependend. That is the reason for the parameter.
      */
     func wordToIntegerString(language: String) -> String? {
         #if DEBUG

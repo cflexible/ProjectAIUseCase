@@ -9,18 +9,29 @@ import Cocoa
 import CoreML
 import NaturalLanguage
 
+/** The ChatController class is the main function class of the application where the input of a hotel guest is analyzed.
+ The most important thing is getting the questions to present to the guest which are dependend on the Booking
+ object in which the data will be stored. Automaticcally dependend on open (unfilled) necessary attributes, the
+ next question is selected.
+*/
 class ChatController: NSObject {
+    /// The classifierModel holds the model for classifying the texts. It should use a language dependend model.
     static var classifierModel: NLModel?
+    /// The taggerModel holds the model for tagging the text words. It should use a language dependend model.
     static var taggerModel: NLModel?
 
-    static var classifierVersion = "4"
-    static var taggerVersion     = "4"
+    /// A variable to set the classifier model version when it is selected.
+    static let classifierVersion = "4"
+    /// A variable to set the tagger model version when it is selected.
+    static let taggerVersion     = "4"
 
-    static var actStep: Int = -1
+    /// Variable to hold the sentences in from the text to analyse. The text is splitt with the . into sentences and each sentence is then analysed.
     static var taggingSentences:           [String] = []
     
+    /// workBooking holds the DB object with which we save the guest information
     static var workBooking:   Booking = Booking.createBooking() // Here we initialize a booking object including a guest object
-    static var wantsBooking:  Bool?
+    
+    /// In askedQuestion we memorize the actual presented question
     static var askedQuestion: Int = -10
     
     // If the current language is changed we load the language model
@@ -44,8 +55,8 @@ class ChatController: NSObject {
     //MARK: Initialisation functions
 
     /**
-        Load of language specific models if possible. Otherwise look for an english version or a version without a language
-     */
+     Load of language specific models if possible. Otherwise look for an english version or a version without a language
+    */
     static private func initModels() {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -100,7 +111,7 @@ class ChatController: NSObject {
 
 
     /**
-        Look for the current text language
+     Look for the current text language
      */
     static func currentTextLanguage(text: String) -> String {
         #if DEBUG
@@ -119,7 +130,7 @@ class ChatController: NSObject {
     //MARK: Workflow functions
     /**
         Main function for analysing a text. Here we just splitt the text into sentences and analyse them separately
-     */
+    */
     static func analyseText(text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -150,9 +161,9 @@ class ChatController: NSObject {
     
     
     /**
-        This is the main function of analysing the texts. Here we get one sentence. So we can first analyse the kind
-        of the sentence before we analyse the content of the sentence.
-     */
+     This is the main function of analysing the texts. Here we get one sentence. So we can first analyse the kind
+     of the sentence before we analyse the content of the sentence.
+    */
     static private func analyseSentence(text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -300,7 +311,7 @@ class ChatController: NSObject {
             return Booking.roomPrices() + "<br>"
         case "free-room":
             if workBooking.startDate != nil && workBooking.endDate != nil && workBooking.numberOfGuests == 0 {
-                return Booking.freeRooms(fromDate: workBooking.startDate!, toDate: workBooking.endDate!, countPersons: Int(workBooking.numberOfGuests)) + "<br>" //+ getNextQuestion()
+                return Booking.freeRoomsText(fromDate: workBooking.startDate!, toDate: workBooking.endDate!, countPersons: Int(workBooking.numberOfGuests)) + "<br>" //+ getNextQuestion()
             }
             return Translations().getTranslation(text: "Please give us your visit dates and how many you are.<br>")
         default:
@@ -311,7 +322,9 @@ class ChatController: NSObject {
     }
     
     
-
+    /**
+     This function is for analysing the word of the text and uses the most appropriate result.
+     */
     static func valueForTag(tagname: String, text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -356,6 +369,10 @@ class ChatController: NSObject {
     }
 
     
+    /**
+     In this function we know we have names in the text and now we want to know which word of a text is a firstname and which one is a lastname.
+     Later on it should also be possible to get the gender from the firstname.
+     */
     static func valueForNames(tagname: String, text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -400,6 +417,9 @@ class ChatController: NSObject {
     }
 
 
+    /**
+     This function analyses the text and tries to figgure out which words include a from date and which one include a to date.
+     */
     static func valueForDates(text: String, language: String) -> [Date]? {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -586,6 +606,9 @@ class ChatController: NSObject {
     }
 
 
+    /**
+     This function is for analysing numbers which can also be words. Therefore the words must be analyzed to get the number.
+     */
     static func valueForNumbers(tagname: String, text: String) -> Int {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -635,6 +658,9 @@ class ChatController: NSObject {
     }
 
     
+    /**
+     In this function we know that there is a phone number in the text (sentence) but it is splitt into peaces. Therefore the tagger is used to get the single peaces and they are put together to one number.
+     */
     static func valueForPhone(text: String) -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -674,22 +700,12 @@ class ChatController: NSObject {
         return resultPhoneNumber
     }
 
-/*
-    static func addValueToBooking(data: NSObject) {
-        #if DEBUG
-            NSLog("\(type(of: self)) \(#function)()")
-        #endif
-
-        if data is Guest {
-            if workBooking == nil {
-                workBooking = DatastoreController.shared.createNewEntityByName("Booking") as? Booking
-            }
-            workBooking.guest = (data as! Guest)
-
-        }
-    }
-    */
     
+    /**
+     This is the central function of the class. Here we look at the steps of the workflow and check if the values we want to have in our booking object are allready given by the guest.
+     Otherwise the guest will asked for the next open information. At the end, when the booking information is complete the summary is presented to the user. But in this class only the texts
+     are created. For the text creation also the Translation class is used.
+     */
     static func getNextQuestion() -> String {
         #if DEBUG
             NSLog("\(type(of: self)) \(#function)()")
@@ -713,14 +729,6 @@ class ChatController: NSObject {
             else {
                 if workflow.checkAttributename?.count ?? 0 > 0 {
                     // Get the value from the workBooking object which is asked by the workflow question
-                    /*
-                    let validateValue = workBooking.value(forKeyPath: workflow.checkAttributename ?? "")
-                    if workflow.checkFunction == "==" && workflow.checkValue != nil {
-                        if String(describing: validateValue) == workflow.checkValue {
-                            askedQuestion = Int(workflow.questionNumber)
-                        }
-                    }
-                     */
                     // If the booking value is empty it is asked for
                     if !isValueCorrectFilled(booking: workBooking, workflow: workflow) {
                         askedQuestion = Int(workflow.questionNumber)
