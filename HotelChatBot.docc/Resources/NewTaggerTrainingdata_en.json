@@ -1,0 +1,21 @@
+[
+{"tokens": ""Hello", ",", "I", "am", "James", "Bond"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "first-name", "last-name""}
+,{"tokens": ""Hello", ",", "my", "name", "is", "James", "Bond"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "NONE", "last-name", "last-name""}
+,{"tokens": ""I", "would", "like", "to", "stay", "from", "2023", "04", "01", "til", "2023", "04", "15"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "from-year-month-day", "from-year-month-day", "from-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day""}
+,{"tokens": ""I", "would", "like", "to", "stay", "from", "2023", "04", "01", "til", "2023", "04", "15"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "from-year-month-day", "from-year-month-day", "from-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day""}
+,{"tokens": ""Hello", ",", "I", "am", "James", "Bond"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "first-name", "last-name""}
+,{"tokens": ""I", "am", "James", "Bond"",
+    "labels": ""NONE", "NONE", "first-name", "last-name""}
+,{"tokens": ""And", "you", "are", "not", "able", "to", "understand", "this"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE""}
+,{"tokens": ""Hello", "my", "name", "is", "James", "Bond", "and", "i", "would", "like", "to", "stay", "from", "23", "-", "04", "-", "01", "til", "23", "-", "04", "-", "10"", "labels": ""NONE", "NONE", "NONE", "NONE", "first-name", "last-name", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "from-day-month", "from-day-month", "from-day-month", "from-day-month", "from-day-month", "to-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day", "to-year-month-day""}
+,{"tokens": ""Hello", ",", "iam", "James", "Bond"",
+    "labels": ""NONE", "NONE", "first-name", "first-name", "last-name""}
+,{"tokens": ""And", "you", "are", "not", "able", "to", "understand", "this"",
+    "labels": ""NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE""}
+]

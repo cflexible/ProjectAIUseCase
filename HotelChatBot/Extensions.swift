@@ -50,9 +50,14 @@ public extension String {
             resultNumber = numberFormatter.number(from: self) as? Int
         }
         
-        var resultString = self
+        var resultString: String? = self
         if resultNumber != nil {
             resultString = String(resultNumber!)
+        }
+        if resultNumber == nil {
+            if translateNumberWords(word: self) != nil {
+                resultString = String(translateNumberWords(word: self) ?? 0)
+            }
         }
         return resultString
     }
@@ -87,6 +92,93 @@ public extension String {
             return String(after)
         }
         return ""
+    }
+    
+    
+    private func translateNumberWords(word: String) -> Int? {
+        switch word.lowercased() {
+        case "alone":
+            return 1
+        case "1":
+            return 1
+        case "one":
+            return 1
+        case "two":
+            return 2
+        case "three":
+            return 3
+        case "four":
+            return 4
+        case "five":
+            return 5
+        case "six":
+            return 6
+        case "seven":
+            return 7
+        case "eight":
+            return 8
+        case "nine":
+            return 9
+        case "ten":
+            return 10
+        case "eleven":
+            return 11
+        case "twelve":
+            return 12
+        case "thirteen":
+            return 13
+        case "2":
+            return 2
+        case "3":
+            return 3
+        case "4":
+            return 4
+        case "5":
+            return 5
+        case "6":
+            return 6
+        case "7":
+            return 7
+        case "8":
+            return 8
+        case "9":
+            return 9
+        case "10":
+            return 10
+        case "11":
+            return 11
+        case "12":
+            return 12
+        case "13":
+            return 13
+        case "first":
+            return 1
+        case "second":
+            return 2
+        case "third":
+            return 3
+        case "fourth":
+            return 4
+        case "fifth":
+            return 5
+        case "sixth":
+            return 6
+        case "seventh":
+            return 7
+        case "eighth":
+            return 8
+        case "ninth":
+            return 9
+        case "tenth":
+            return 10
+        case "eleventh":
+            return 11
+        case "twelvth":
+            return 12
+
+        default:
+            return nil
+        }
     }
 }
 

@@ -19,12 +19,20 @@
         
         @Steps {
             @Step {
-                Open the json files for training and testing. Check all the classifier and tags if they are correct.
+                Open the json files for training and testing. Check all the classifier if they are correct.
                 Perhaps you can use other tools than a standard editor to generate more examples from these sets.
                 For example you can use sentences with names and a list of names to generate many more trainings sentences.
                 With each sentence the ML model will be better and better.
                 
                 @Code(name: "ClassifierExample.json", file: ClassifierExample.json)
+            }
+            @Step {
+                Open the json files for training and testing. Check all the tags if they are correct.
+                Perhaps you can use other tools than a standard editor to generate more examples from these sets.
+                For example you can use sentences with names and a list of names to generate many more trainings sentences.
+                With each word taggings the ML model will be better and better.
+                
+                @Code(name: "NewTaggerTrainingdata_en.json", file: NewTaggerTrainingdata_en.json)
             }
             @Step {
                 When you have created new training and test files you can create new models or model versions and put them into the

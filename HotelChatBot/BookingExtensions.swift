@@ -345,13 +345,68 @@ public extension Booking {
                 return false
             }
             else {
-                return (self.value(forKey: key) as! Booking).bookingComplete()
+                let value = self.value(forKey: key)
+                if value is Booking {
+                    return (value as! Booking).bookingComplete()
+                }
+                return bookingComplete(object: value as! NSManagedObject)
             }
         }
 
         // we test the direct relationships if they are also exist if not optional
         for key in manyRelationshipKeys {
             let object = self.entity.relationshipsByName[key]
+            if object?.isOptional ?? true {
+                continue
+            }
+            else if object == nil {
+                return false
+            }
+            // we can spare the test of all subobjects. It is enough to know that they exist.
+        }
+
+        return true
+    }
+
+
+    func bookingComplete(object: NSManagedObject) -> Bool {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        let attributeKeys        = object.entity.attributeKeys
+        let oneRelationshipKeys  = object.entity.toOneRelationshipKeys
+        let manyRelationshipKeys = object.entity.toManyRelationshipKeys
+        
+        // we test the original attributes if they are not optional and have a value
+        for key in attributeKeys {
+            let attribute = object.entity.attributesByName[key]
+            if attribute?.isOptional ?? true {
+                continue
+            }
+            else if object.value(forKey: key) == nil {
+                return false // We have a need object but no value, so the booking is not complete
+            }
+        }
+        
+        // we test the direct relationships if they are also exist if not optional
+        for key in oneRelationshipKeys {
+            let object = object.entity.relationshipsByName[key]
+            if object?.isOptional ?? true {
+                continue
+            }
+            else if object == nil {
+                return false
+            }
+            else {
+                let value = object?.entity.value(forKey: key)
+                return bookingComplete(object: value as! NSManagedObject)
+            }
+        }
+
+        // we test the direct relationships if they are also exist if not optional
+        for key in manyRelationshipKeys {
+            let object = object.entity.relationshipsByName[key]
             if object?.isOptional ?? true {
                 continue
             }

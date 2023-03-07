@@ -21,7 +21,7 @@ class ChatController: NSObject {
     static var taggerModel: NLModel?
 
     /// A variable to set the classifier model version when it is selected.
-    static let classifierVersion = "4"
+    static let classifierVersion = "1"
     /// A variable to set the tagger model version when it is selected.
     static let taggerVersion     = "4"
 
@@ -51,6 +51,9 @@ class ChatController: NSObject {
     
     // We read all the workflows once from the database and sort them by questionNumber
     static var workflows: [Workflow] = DatastoreController.shared.allForEntity("Workflow", with: nil, orderBy: [NSSortDescriptor(key: "questionNumber", ascending: true)]) as! [Workflow]
+
+    static let baseErrormessage = Translations().getTranslation(text: "We are sorry but I did not understand you.<br>")
+    
 
     //MARK: Initialisation functions
 
@@ -144,8 +147,16 @@ class ChatController: NSObject {
         // Initialize the models
         initModels()
 
+        var text = text
+        text = text.replacingOccurrences(of: "ü", with: "ue")
+        text = text.replacingOccurrences(of: "ä", with: "ae")
+        text = text.replacingOccurrences(of: "ö", with: "oe")
+        text = text.replacingOccurrences(of: "Ü", with: "Ue")
+        text = text.replacingOccurrences(of: "Ä", with: "Ae")
+        text = text.replacingOccurrences(of: "Ö", with: "Oe")
+        text = text.replacingOccurrences(of: "ß", with: "ss")
         // Split the text into sentences (this is actually simple but a fast way)
-        let sentences = text.split(separator: ".")
+        let sentences = text.split(separator: ". ")
         var fullResult = ""
         for sentence in sentences {
             let result: String = analyseSentence(text: String(sentence))
@@ -174,14 +185,16 @@ class ChatController: NSObject {
             return String("I'm sorry but I miss a NLP model, please ask the developer.")
         }
 
-        let baseErrormessage = Translations().getTranslation(text: "We are sorry but I did not understand you.<br>")
-        
         var classifierLabel = classifierModel!.predictedLabel(for: text)
         // We remember the text
         ClassifierHelper.addText(language: currentLanguage, text: text, classifierString: classifierLabel)
-        print("Found classifier: \(classifierLabel ?? "")")
+        print("Found classifier: \(classifierLabel ?? "") for Question: \(askedQuestion) \(questionForAskedNumber(number: askedQuestion))")
         if ["hasEnglishDates", "hasGermanDates", "hasUSDates"].contains(classifierLabel) {
             classifierLabel = "hasDates"
+        }
+        
+        if Utilities.getMailAddressFromText(text) != nil {
+            return accessMail(text: text)
         }
         
         switch classifierLabel {
@@ -204,31 +217,7 @@ class ChatController: NSObject {
             return baseErrormessage + Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
             
         case "hasMailaddress":
-            let mail: String = Utilities.getMailAddressFromText(text) ?? ""
-            
-            if workBooking.guest != nil && workBooking.guest?.firstname?.count ?? 0 > 0 && workBooking.guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
-                workBooking.guest?.mailaddress = mail
-            }
-            else if mail.count > 0 {
-                let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
-                if guestDB != nil {
-                    workBooking.guest = guestDB!
-                }
-            }
-            else {
-                return baseErrormessage
-            }
-            if workBooking.guest != nil {
-                let firstName: String = workBooking.guest?.firstname ?? ""
-                let lastName:  String = workBooking.guest?.lastname  ?? ""
-                var positiveReturn = Translations().getTranslation(text: workflows[askedQuestion + 1].positiveAnswer ?? "")
-                positiveReturn = positiveReturn.replacingOccurrences(of: "<firstName>", with: firstName)
-                positiveReturn = positiveReturn.replacingOccurrences(of: "<lastName>", with: lastName)
-                return positiveReturn
-            }
-            else {
-                return Translations().getTranslation(text: "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>")
-            }
+            return accessMail(text: text)
 
         case "numberOfGuests":
             let numberOfGuests = valueForNumbers(tagname: "number", text: text)
@@ -260,7 +249,29 @@ class ChatController: NSObject {
         case "negative-hasChildren":
             workBooking.numberOfChildren = 0
             return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
-            
+
+        case "payment":
+            let paymenttypes: [String] = valueForTag(tagnames: ["cash", "card"], text: text)
+            var paymentType: String?
+            for type in paymenttypes {
+                if paymentType != nil {
+                    paymentType = paymentType ?? "" + " "
+                }
+                paymentType = paymentType ?? "" + type
+            }
+            if paymentType != nil {
+                workBooking.paymentMethod = paymentType
+                return Translations().getTranslation(text: "We have noticed you would like to pay \(paymentType ?? "unknown").<br>")
+            }
+            if text.contains("cash") {
+                workBooking.paymentMethod = "cash"
+                return Translations().getTranslation(text: "We have noticed you would like to pay cash.<br>")
+            }
+            if text.contains("card") {
+                workBooking.paymentMethod = "credit card"
+                return Translations().getTranslation(text: "We have noticed you would like to pay with credit card.<br>")
+            }
+
         case "privateVisit":
             workBooking.guestType = "Private"
             return Translations().getTranslation(text: "We have noticed your visit as a private visit.<br>")
@@ -294,17 +305,42 @@ class ChatController: NSObject {
             return Translations().getTranslation(text: "It is noticed that you do not need a parking place.<br>")
         
         case "number-answer":
+            let foundValue = valueForNumbers(tagname: "number", text: text)
+            if askedQuestion == 6 && foundValue != 0 {
+                workBooking.numberOfGuests = Int16(foundValue)
+                return Translations().getTranslation(text: "Ok, we noticed you are \(foundValue) persons<br>")
+            }
+            else if askedQuestion == 7 && foundValue != 0 {
+                workBooking.numberOfChildren = Int16(foundValue)
+                return Translations().getTranslation(text: "Ok, we noticed you have \(foundValue) children with you<br>")
+            }
             return Translations().getTranslation(text: "Thank you for the number<br>")
             
             // we expect a yes or something like that
-        case "simple-positiv":
-            if workBooking.finishBooking() {
+        case "simple-positive":
+            if askedQuestion == 7 {
+                workBooking.numberOfChildren = 0
+                return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            }
+            else if askedQuestion == 8 {
+                workBooking.breakfast = true
+                return Translations().getTranslation(text: "Breakfast is noticed.<br>")
+            }
+            else if workBooking.finishBooking() {
                 return "" // If the booking is finished we just return for the next question
             }
             return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
             
             // we expect a no or something like that
-        case "simple-negativ":
+        case "simple-negative":
+            if askedQuestion == 7 {
+                workBooking.numberOfChildren = 0
+                return Translations().getTranslation(text: workflows[askedQuestion].negativeAnswer ?? "")
+            }
+            else if askedQuestion == 8 {
+                workBooking.breakfast = false
+                return Translations().getTranslation(text: "It is noticed that you do not want to have breakfast.<br>")
+            }
             return Translations().getTranslation(text: "Thank you. We have noticed that you do not want to book.<br>You can close the window.<br>")
             
         case "room-price":
@@ -319,6 +355,37 @@ class ChatController: NSObject {
         }
         
         return baseErrormessage
+    }
+    
+    
+    static private func accessMail(text: String) -> String {
+        let mail: String = Utilities.getMailAddressFromText(text) ?? ""
+        
+        if workBooking.guest != nil && workBooking.guest?.firstname?.count ?? 0 > 0 && workBooking.guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
+            workBooking.guest?.mailaddress = mail
+            return Translations().getTranslation(text: "Thank you for your mail address.<br>")
+        }
+        else if mail.count > 0 && workBooking.guest == nil {
+            let guestDB: Guest? = DatastoreController.shared.entityByName("Guest", key: "mailaddress", value: mail as NSObject) as? Guest
+            if guestDB != nil {
+                workBooking.guest = guestDB!
+                let firstName: String = workBooking.guest?.firstname ?? ""
+                let lastName:  String = workBooking.guest?.lastname  ?? ""
+                var positiveReturn = Translations().getTranslation(text: workflows[askedQuestion + 1].positiveAnswer ?? "")
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<firstName>", with: firstName)
+                positiveReturn = positiveReturn.replacingOccurrences(of: "<lastName>", with: lastName)
+                return positiveReturn
+            }
+        }
+        else if mail.count == 0 {
+            return baseErrormessage
+        }
+        if workBooking.guest != nil {
+            return Translations().getTranslation(text: "Thank you for your information.<br>") // We should not come to here
+        }
+        else {
+            return Translations().getTranslation(text: "I'm sorry but I could not find you in our System. Please give us your names. Thanks.<br>")
+        }
     }
     
     
@@ -370,6 +437,57 @@ class ChatController: NSObject {
 
     
     /**
+     This function is for analysing the word of the text and uses the most appropriate result.
+     */
+    static func valueForTag(tagnames: [String], text: String) -> [String] {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        struct ValueHypotheseses {
+            var text: String
+            var hypotheses: Double
+        }
+
+        var foundValues: [ValueHypotheseses] = []
+
+        // We remember the text to get new classifier trainings data if neccessary
+        var newLearnTaggingWordStrings: [String]  = []
+        var newLearnTaggingStrings:     [String]  = []
+        
+        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
+        let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
+        tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
+        tagger.string = text
+        tagger.enumerateTags(in: text.startIndex..<text.endIndex,
+                             unit: .word,
+                             scheme: chatTagScheme,
+                             options: [.omitWhitespace]) { tag, tokenRange in
+            if let tag = tag {
+                print("\(text[tokenRange]): \(tag.rawValue)")
+                newLearnTaggingWordStrings.append(String(text[tokenRange]))
+                newLearnTaggingStrings.append(tag.rawValue)
+                
+                if tagnames.contains(tag.rawValue) {
+                    let hypotheses =  tagger.tagHypotheses(at: tokenRange.lowerBound, unit: .word, scheme: chatTagScheme, maximumCount: 1)
+                    let hypothesisValue = hypotheses.0.values
+                    let pair: ValueHypotheseses = ValueHypotheseses(text: String(text[tokenRange]), hypotheses: hypothesisValue.first ?? 0)
+                    foundValues.append(pair)
+                }
+            }
+            return true
+        }
+        TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
+        foundValues.sort(by: { $0.hypotheses > $1.hypotheses })
+        var returnStrings: [String] = []
+        for value in foundValues {
+            returnStrings.append(String(value.text))
+        }
+        return returnStrings
+    }
+
+    
+    /**
      In this function we know we have names in the text and now we want to know which word of a text is a firstname and which one is a lastname.
      Later on it should also be possible to get the gender from the firstname.
      */
@@ -396,7 +514,7 @@ class ChatController: NSObject {
         tagger.enumerateTags(in: text.startIndex..<text.endIndex,
                              unit: .word,
                              scheme: chatTagScheme,
-                             options: [.omitWhitespace]) { tag, tokenRange in
+                             options: [.omitWhitespace, .omitPunctuation]) { tag, tokenRange in
             if let tag = tag {
                 print("\(text[tokenRange]): \(tag.rawValue)")
                 newLearnTaggingWordStrings.append(String(text[tokenRange]))
@@ -417,6 +535,17 @@ class ChatController: NSObject {
     }
 
 
+    /**
+        This function is just for test purposes
+     */
+    private static func questionForAskedNumber(number: Int) -> String {
+        for workflow in workflows {
+            if workflow.questionNumber == number {
+                return workflow.englishText ?? "unknown"
+            }
+        }
+        return "unknown"
+    }
     /**
      This function analyses the text and tries to figgure out which words include a from date and which one include a to date.
      */
@@ -629,6 +758,7 @@ class ChatController: NSObject {
         // We remember the text to get new classifier trainings data if neccessary
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
+        var manualFoundValues:             [Int]  = []
 
         let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
@@ -649,11 +779,21 @@ class ChatController: NSObject {
                     let pair: ValueHypotheseses = ValueHypotheseses(text: String(text[tokenRange]), hypotheses: hypothesisValue.first ?? 0)
                     foundValues.append(pair)
                 }
+                else {
+                    // From unknown reason this does not work properly so we try it by ourself
+                    let testVal = Int(String(text[tokenRange]).wordToIntegerString(language: languageRecog.dominantLanguage?.rawValue ?? "") ?? "") ?? 0
+                    if testVal > 0 {
+                        manualFoundValues.append(testVal)
+                    }
+                }
             }
             return true
         }
         TaggerHelper.addTag(language: currentLanguage, words: newLearnTaggingWordStrings, tags: newLearnTaggingStrings)
         foundValues.sort(by: { $0.hypotheses > $1.hypotheses })
+        if foundValues.count == 0 && manualFoundValues.count > 0 {
+            return manualFoundValues[0]
+        }
         return Int(foundValues.first?.text.wordToIntegerString(language: languageRecog.dominantLanguage?.rawValue ?? "") ?? "") ?? 0
     }
 
