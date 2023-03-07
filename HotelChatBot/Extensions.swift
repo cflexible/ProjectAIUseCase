@@ -97,6 +97,12 @@ public extension String {
     
     private func translateNumberWords(word: String) -> Int? {
         switch word.lowercased() {
+        case "zero":
+            return 0
+        case "0":
+            return 0
+        case "none":
+            return 0
         case "alone":
             return 1
         case "1":
