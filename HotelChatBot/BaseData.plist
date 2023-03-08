@@ -352,7 +352,7 @@
 				<key>questionNumber</key>
 				<integer>15</integer>
 				<key>englishText</key>
-				<string>Thank you for your booking. We send you a confirmation mail. Good bye.&lt;br&gt;</string>
+				<string>Thank you for your booking.&lt;br&gt;We send you a confirmation mail.&lt;br&gt;Good bye.&lt;br&gt;</string>
 				<key>helpText</key>
 				<string>You can close the window.</string>
 				<key>checkFunction</key>

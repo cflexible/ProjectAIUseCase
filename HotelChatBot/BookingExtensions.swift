@@ -61,7 +61,7 @@ public extension Booking {
             NSLog("\(type(of: self)) \(#function)()")
         #endif
 
-        let bookingPredicate = NSPredicate.init(format: "startDate >= \(fromDate) and endDate <= \(toDate)")
+        let bookingPredicate = NSPredicate.init(format: "startDate >= %@ and endDate <= %@", fromDate as NSDate, toDate as NSDate)
         let bookingObjects: [Booking]? = DatastoreController.shared.allForEntity("Booking", with: bookingPredicate) as? [Booking]
         
         var bookedRooms: [Room] = []
@@ -71,7 +71,7 @@ public extension Booking {
             }
         }
         
-        let roomPredicate = NSPredicate.init(format: "not room in \(bookedRooms)")
+        let roomPredicate = NSPredicate.init(format: "not room in %@", bookedRooms)
         var freeRooms: [Room]? = DatastoreController.shared.allForEntity("Room", with: roomPredicate) as? [Room]
         // we should add a sort with count of beds later but for now all rooms have two beds
         
@@ -239,34 +239,34 @@ public extension Booking {
         var html: String = "<style>" + bookingStyle + "</style>"
         html = html + "<div class=\"divTable blueTable\">"
         html = html + "<div class=\"divTableHeading\">"
-        html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableHead\">" + Translations().getTranslation(text:"What") + "</div>"
-        html = html + "<div class=\"divTableHead\">Your value</div>"
+        html = html + "<div class=\"divTableHeaderRow\">"
+        html = html + "<div class=\"divTableHead\" style=\"border-top-left-radius: 1rem;\">" + Translations().getTranslation(text:"What") + "</div>"
+        html = html + "<div class=\"divTableHead\" style=\"border-top-right-radius: 1rem;\">Your value</div>"
         html = html + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableBody\">"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Name") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Name") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.firstname)! + " " + (self.guest?.lastname)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Stay from") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Stay from") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.startDate!.description + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Stay to") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Stay to") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.endDate!.description + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Number of guests") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Number of guests") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.numberOfGuests) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Number of children") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Number of children") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.numberOfChildren) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"With breakfast") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"With breakfast") + "</div>"
         if breakfast {
             boolString = Translations().getTranslation(text:"YES")
         }
@@ -282,31 +282,31 @@ public extension Booking {
             boolString = Translations().getTranslation(text:"NO")
         }
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Parkingplace") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Parkingplace") + "</div>"
         html = html + "<div class=\"divTableCell\">" + boolString + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Visit type") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Visit type") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.guestType! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Payment type") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Payment type") + "</div>"
         html = html + "<div class=\"divTableCell\">" + self.paymentMethod! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Phone") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Phone") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.phonenumber)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Mail") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Mail") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.guest?.mailaddress)! + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Booked rooms") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Booked rooms") + "</div>"
         html = html + "<div class=\"divTableCell\">" + String(self.rooms!.count) + "</div>"
         html = html + "</div>"
         html = html + "<div class=\"divTableRow\">"
-        html = html + "<div class=\"divTableCell\">" + Translations().getTranslation(text:"Comment") + "</div>"
+        html = html + "<div class=\"divRowHead\">" + Translations().getTranslation(text:"Comment") + "</div>"
         html = html + "<div class=\"divTableCell\">" + (self.comment ?? "") + "</div>"
         html = html + "</div>"
         html = html + "</div>"

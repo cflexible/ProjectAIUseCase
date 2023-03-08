@@ -221,18 +221,8 @@ class ChatController: NSObject {
 
         case "numberOfGuests":
             let numberOfGuests = valueForNumbers(tagname: "number", text: text)
-            if workBooking.startDate != nil && workBooking.endDate != nil && numberOfGuests > 0 {
-                let bookedRoomCount: Int = workBooking.bookRooms(fromDate: (workBooking.startDate)!, toDate: (workBooking.endDate)!, countPersons: numberOfGuests)
-                if bookedRoomCount > 0 {
-                    var bookedRoomResult = Translations().getTranslation(text: "We have booked <bookedRoomCount> rooms for you.<br>")
-                    bookedRoomResult = bookedRoomResult.replacingOccurrences(of: "bookedRoomCount", with: String(bookedRoomCount))
-                    return bookedRoomResult
-                }
-                else {
-                    return Translations().getTranslation(text: "We are sorry but we have not enough free rooms available.<br>")
-                }
-            }
-            return Translations().getTranslation(text: "We are sorry but we could not understand how many you are. Please try it again.<br>")
+            workBooking.numberOfGuests = Int16(numberOfGuests)
+            return bookRooms()
             
         case "hasDates":
             let dates: [Date]? = valueForDates(text: text, language: currentLanguage)
@@ -308,7 +298,7 @@ class ChatController: NSObject {
             let foundValue = valueForNumbers(tagname: "number", text: text)
             if askedQuestion == 6 && foundValue != 0 {
                 workBooking.numberOfGuests = Int16(foundValue)
-                return Translations().getTranslation(text: "Ok, we noticed you are \(foundValue) persons<br>")
+                return bookRooms()
             }
             else if askedQuestion == 7 && foundValue != 0 {
                 workBooking.numberOfChildren = Int16(foundValue)
@@ -358,7 +348,31 @@ class ChatController: NSObject {
     }
     
     
+    static private func bookRooms() -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
+        if workBooking.startDate != nil && workBooking.endDate != nil && workBooking.numberOfGuests > 0 {
+            let bookedRoomCount: Int = workBooking.bookRooms(fromDate: (workBooking.startDate)!, toDate: (workBooking.endDate)!, countPersons: Int(workBooking.numberOfGuests))
+            if bookedRoomCount > 0 {
+                var bookedRoomResult = Translations().getTranslation(text: "We have booked <bookedRoomCount> rooms for you.<br>")
+                bookedRoomResult = bookedRoomResult.replacingOccurrences(of: "<bookedRoomCount>", with: String(bookedRoomCount))
+                return bookedRoomResult
+            }
+            else {
+                return Translations().getTranslation(text: "We are sorry but we have not enough free rooms available.<br>")
+            }
+        }
+        return Translations().getTranslation(text: "We are sorry but we could not understand how many you are. Please try it again.<br>")
+    }
+    
+    
     static private func accessMail(text: String) -> String {
+        #if DEBUG
+            NSLog("\(type(of: self)) \(#function)()")
+        #endif
+
         let mail: String = Utilities.getMailAddressFromText(text) ?? ""
         
         if workBooking.guest != nil && workBooking.guest?.firstname?.count ?? 0 > 0 && workBooking.guest?.lastname?.count ?? 0 > 0 && mail.count > 0 {
