@@ -4,7 +4,7 @@
     }
     
     @Chapter(name: "How to adjust the app") {
-        @Image(source: "XCodeSymbol.png", alt: "For the developer to adjust the app for yout own needs")
+        @Image(source: "XCodeSymbol.png", alt: "For the developer to adjust the app for your own needs")
  
         There are some possibilities to adjust the app to your own needs.
         The most important part there is the training of ML models for analysing texts.
@@ -16,7 +16,7 @@
         @Image(source: "CircleOfLife.png", alt: "After the chatbot is ready to use")
  
         After the chatbot is ready to use it would be suitable to test the models and to retrain them.
-        Therfore the user input is collected for retraining the models.
+        Therefore the user input is collected for retraining the models.
         
         @TutorialReference(tutorial: "doc:RetrainModels")
     }

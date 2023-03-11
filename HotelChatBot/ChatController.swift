@@ -34,7 +34,7 @@ class ChatController: NSObject {
     /// In askedQuestion we memorize the actual presented question
     static var askedQuestion: Int = -10
     
-    // If the current language is changed we load the language model
+    /// The current language which loads the language dependend models when the language is changed, also for the Translation class
     static var currentLanguage: String = "en" {
         didSet {
             if currentLanguage != oldValue && Bundle.main.url(forResource: "HotelChatbotTextClassifier_" + currentLanguage + " " + classifierVersion, withExtension: "mlmodelc") != nil {
@@ -49,11 +49,14 @@ class ChatController: NSObject {
         }
     }
     
-    // We read all the workflows once from the database and sort them by questionNumber
+    /// All the workflows read once from the database and sort them by questionNumber
     static var workflows: [Workflow] = DatastoreController.shared.allForEntity("Workflow", with: nil, orderBy: [NSSortDescriptor(key: "questionNumber", ascending: true)]) as! [Workflow]
 
+    /// A basic error message
     static let baseErrormessage = Translations().getTranslation(text: "We are sorry but I did not understand you.<br>")
     
+    /// global variable for the tagging scheme
+    static let chatTagScheme:NLTagScheme = NLTagScheme("ChatbotTagScheme")
 
     //MARK: Initialisation functions
 
@@ -421,8 +424,6 @@ class ChatController: NSObject {
         // We remember the text to get new classifier trainings data if neccessary
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
-        
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text
@@ -469,7 +470,6 @@ class ChatController: NSObject {
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
         
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text
@@ -521,7 +521,8 @@ class ChatController: NSObject {
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
 
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
+        let chatTagScheme: NLTagScheme = .tokenType// NLTagScheme("ChatbotTagScheme")
+        print(chatTagScheme)
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text
@@ -585,7 +586,6 @@ class ChatController: NSObject {
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
 
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text
@@ -774,7 +774,6 @@ class ChatController: NSObject {
         var newLearnTaggingStrings:     [String]  = []
         var manualFoundValues:             [Int]  = []
 
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text
@@ -832,7 +831,6 @@ class ChatController: NSObject {
         var newLearnTaggingWordStrings: [String]  = []
         var newLearnTaggingStrings:     [String]  = []
 
-        let chatTagScheme = NLTagScheme("ChatbotTagScheme")
         let tagger = NLTagger(tagSchemes: [chatTagScheme, .nameTypeOrLexicalClass])
         tagger.setModels([taggerModel!], forTagScheme: chatTagScheme)
         tagger.string = text

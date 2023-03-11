@@ -94,8 +94,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "analyseSentence(text:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -218,8 +218,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
             landmarkName = "analyseSentence(text:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,8 +234,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "884"
-            endingLineNumber = "884"
+            startingLineNumber = "882"
+            endingLineNumber = "882"
             landmarkName = "getNextQuestion()"
             landmarkType = "7">
          </BreakpointContent>
@@ -244,16 +244,48 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "87C41CF5-AD94-48C4-898D-AAF0AF75FDC0"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "532"
-            endingLineNumber = "532"
+            startingLineNumber = "533"
+            endingLineNumber = "533"
             landmarkName = "valueForNames(tagname:text:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "87C41CF5-AD94-48C4-898D-AAF0AF75FDC0 - 534699e61f996288"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.NLTag&gt;, Swift.Range&lt;Swift.String.Index&gt;) -&gt; Swift.Bool in static HotelChatBot.ChatController.valueForNames(tagname: Swift.String, text: Swift.String) -&gt; Swift.String"
+                  moduleName = "HotelChatBot"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jluenst/Development/Git%20Repositories/HotelChatbot/HotelChatBot/HotelChatBot/ChatController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "244">
+               </Location>
+               <Location
+                  uuid = "87C41CF5-AD94-48C4-898D-AAF0AF75FDC0 - 534699e61f996288"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.NLTag&gt;, Swift.Range&lt;Swift.String.Index&gt;) -&gt; Swift.Bool in static HotelChatBot.ChatController.valueForNames(tagname: Swift.String, text: Swift.String) -&gt; Swift.String"
+                  moduleName = "HotelChatBot"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jluenst/Development/Git%20Repositories/HotelChatbot/HotelChatBot/HotelChatBot/ChatController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "272">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -266,8 +298,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "528"
-            endingLineNumber = "528"
+            startingLineNumber = "529"
+            endingLineNumber = "529"
             landmarkName = "valueForNames(tagname:text:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -282,8 +314,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
             landmarkName = "analyseSentence(text:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -298,8 +330,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "298"
-            endingLineNumber = "298"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
             landmarkName = "analyseSentence(text:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,8 +346,8 @@
             filePath = "HotelChatBot/ChatController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
+            startingLineNumber = "359"
+            endingLineNumber = "359"
             landmarkName = "bookRooms()"
             landmarkType = "7">
          </BreakpointContent>
@@ -333,6 +365,22 @@
             startingLineNumber = "74"
             endingLineNumber = "74"
             landmarkName = "bookRooms(fromDate:toDate:countPersons:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D27FDA6D-8D8E-4397-9657-9F17F6E77C1E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HotelChatBot/ChatController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "526"
+            endingLineNumber = "526"
+            landmarkName = "valueForNames(tagname:text:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
